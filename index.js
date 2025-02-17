@@ -164,6 +164,7 @@ async function inputDataAndScrape(page, data) {
           const formData = await page.evaluate(() => {
             return {
               nik: document.querySelector('input[name="no_identitas"]')?.value || "",
+              tempat_lahir: document.querySelector('input[name="tempat_lahir"]')?.value || "",
               tgl_lahir: document.querySelector('input[name="tgl_lahir"]')?.value || "",
               jenis_kelamin: document.querySelector('select[name="jenis_kelamin"]')?.value || "",
               ibu_kandung:document.querySelector('input[name="ibu_kandung"]')?.value ||"",
@@ -182,6 +183,7 @@ async function inputDataAndScrape(page, data) {
         const formData = {
             nik:  "",
             nama_lengkap: "",
+            tempat_lahir:"",
             tgl_lahir: "",
             jenis_kelamin: "",
             ibu_kandung:"",
@@ -198,6 +200,7 @@ async function inputDataAndScrape(page, data) {
       console.error(`Error handling modal for KPJ ${data.kpj}:`, modalError);
       const formData = {
         nik:  "",
+        tempat_lahir:"",
         tgl_lahir: "",
         jenis_kelamin: "",
         ibu_kandung:"",
@@ -214,6 +217,7 @@ async function inputDataAndScrape(page, data) {
     console.error(`Error processing data for KPJ ${data.kpj}:`, error);
     const formData = {
         nik:  "",
+        tempat_lahir:"",
         tgl_lahir: "",
         jenis_kelamin: "",
         ibu_kandung:"",
