@@ -10,7 +10,15 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "formdata-node": "^6.0.3",
+    "mime-types": "^3.0.1",
+    "node-fetch": "^3.3.2",
     "puppeteer": "^24.2.1",
+    "sharp": "^0.34.2",
+    "tesseract.js": "^6.0.1",
     "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@gradio/client": "^1.15.4"
   }
 }

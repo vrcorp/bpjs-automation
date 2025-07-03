@@ -2,6 +2,8 @@ const puppeteer = require("puppeteer");
 const XLSX = require("xlsx");
 const fs = require("fs");
 const path = require("path");
+import { Client } from "@gradio/client";
+import { v4 as uuidv4 } from "uuid";
 
 // Konfigurasi
 const LOGIN_URL = "https://sipp.bpjsketenagakerjaan.go.id/sipp"; // Sesuaikan dengan URL login yang benar
@@ -13,8 +15,8 @@ const EXCEL_INPUT_PATH = path.join(__dirname, "data.xlsx");
 const EXCEL_OUTPUT_PATH = path.join(__dirname, "hasil_scraping.xlsx");
 
 // Kredensial login - ganti dengan username dan password yang sebenarnya
-const USERNAME = "mamahmamih8888@gmail.com";
-const PASSWORD = "48NJW1U6NJ4";
+const USERNAME = "Sendiprayoga198@gmail.com";
+const PASSWORD = "Bebek1997";
 
 async function main() {
   try {
@@ -70,44 +72,50 @@ async function main() {
     console.error("An error occurred:", error);
   }
 }
+async function solveCaptchaByScreenshot(page) {
+  const captchaElement = await page.$('#img_captcha');
+  const filename = `captcha_${uuidv4()}.jpeg`;
+  const savePath = path.join("captcha", filename);
 
+  await captchaElement.screenshot({ path: savePath });
+  const buffer = fs.readFileSync(savePath);
+
+  // Kirim ke model OCR Gradio
+  const client = await Client.connect("Nischay103/captcha_recognition");
+  const result = await client.predict("/predict", { input: buffer });
+
+  const captchaText = result.data?.[0] || "";
+  console.log("Hasil OCR Captcha:", captchaText);
+  return captchaText;
+}
 async function login(page) {
   try {
     await page.goto("https://sipp.bpjsketenagakerjaan.go.id/", {
       waitUntil: "networkidle2",
     });
 
+    // Screenshot & solve captcha
+    const captchaText = await solveCaptchaByScreenshot(page);
 
-
-    // Isi username dan password
     await page.type('input[name="username"]', USERNAME);
     await page.type('input[name="password"]', PASSWORD);
+    await page.type('input[name="captcha"]', captchaText);
 
-    // Tunggu user mengisi captcha secara manual
-    console.log("Silakan isi captcha secara manual...");
-
-    // Menunggu sampai URL berubah (indikasi login berhasil)
-    await Promise.race([
-      page.waitForNavigation({ timeout: 180000 }), // Timeout 2 menit
-      new Promise((resolve) => {
-        console.log(
-          "Anda memiliki 3 menit untuk menyelesaikan captcha dan login"
-        );
-        setTimeout(resolve, 180000);
-      }),
+    await Promise.all([
+      page.click('button[type="submit"]'),
+      page.waitForNavigation({ timeout: 15000 }).catch(() => {}),
     ]);
 
-    // Verifikasi login berhasil
     const currentUrl = page.url();
-    if (currentUrl.includes("https://sipp.bpjsketenagakerjaan.go.id/")) {
-      console.log("Login berhasil!");
+    if (!currentUrl.includes("login")) {
+      console.log("✅ Login berhasil!");
       return true;
     } else {
-      throw new Error("Login gagal atau timeout.");
+      throw new Error("❌ Login gagal, captcha mungkin salah.");
     }
-  } catch (error) {
-    console.error("Error during login:", error);
-    throw error;
+  } catch (err) {
+    console.error("Gagal login:", err.message);
+    return false;
   }
 }
 
