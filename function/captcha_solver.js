@@ -5,6 +5,10 @@ import { v4 as uuidv4 } from "uuid";
 
 export async function solveCaptchaByScreenshot(page) {
   const captchaElement = await page.$("#img_captcha");
+  if (!captchaElement) {
+    console.log("Captcha element tidak ditemukan");
+    return null;
+  }
   const filename = `captcha_${uuidv4()}.jpeg`;
   const savePath = path.join("captcha", filename);
 

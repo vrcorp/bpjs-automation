@@ -1,45 +1,56 @@
 import { exec } from "child_process";
 import util from "util";
 
-const sh = util.promisify(exec);            // promisify biar bisa await
+const sh = util.promisify(exec);
+const MAX_BUF = 1024 * 1024;          // 1 MB log buffer
 
-function runCmd(cmd) {
-  return sh(cmd, { maxBuffer: 1024 * 1024 }) // 1 MB buffer log
-    .then(({ stdout }) => stdout.trim())
-    .catch((e) => {
-      console.error("[pm2Runner]", e.stderr || e);
-      throw e;
-    });
+async function run(cmd) {
+  try {
+    const { stdout } = await sh(cmd, { maxBuffer: MAX_BUF, shell: true });
+    return stdout.trim();
+  } catch (e) {
+    throw new Error(e.stderr || e.message);
+  }
 }
 
-/* ───── helper umum ───── */
-function pm2Start({ name, args, profile, autorestart = true }) {
-  // jika proses dg nama itu sudah ada, skip (biar ga dobel)
-  return runCmd(`pm2 describe ${name} || true`).then((out) => {
-    if (out.includes(name)) return `[pm2] ${name} already running`;
-    const env = profile ? `PUP_PROFILE=${profile} ` : "";
-    const ar  = autorestart ? "" : "--autorestart=false";
-    const cmd = `${env}pm2 start worker.js --name ${name} ${ar} -- ${args}`;
-    return runCmd(cmd);
+/** @param {string} name  – nama proses PM2
+  * @param {string} args  – argumen yg dikirim ke worker.js
+  * @param {string} profile – nama folder cache Chrome (boleh kosong)
+  */
+async function pm2Start({ name, args, profile = "", autorestart = true }) {
+  // Skip jika proses sudah ada
+  const desc = await run(`pm2 jlist | grep -w '"name":"${name}"' || true`);
+  if (desc) return `[pm2] ${name} already running`;
+
+  const envPart = profile
+    ? `npx cross-env PUP_PROFILE="${profile}"`
+    : "";
+
+  const arFlag = autorestart ? "" : "--no-autorestart";
+  const cmd    = `${envPart} pm2 start worker.js --name ${name} ${arFlag} -- ${args}`;
+
+  return run(cmd);
+}
+
+/* ──────────── Export helper yang dipakai API ──────────── */
+
+export const runGenerate = (mode = "default") =>
+  pm2Start({
+    name: `sipp-${mode}`,
+    args: `--mode=${mode}`,
+    profile: `chrome-${mode}`
   });
-}
 
-/* ───────── exports ───────── */
+export const runParentById = (id) =>
+  pm2Start({
+    name: `parent-${id}`,
+    args: `--parent=${id}`,
+    profile: `chrome-parent-${id}`,
+  });
 
-export async function runGenerate(mode = "default") {
-  const name    = `sipp-${mode}`;
-  const profile = `chrome-${mode}`;
-  return pm2Start({ name, args: `--mode=${mode}`, profile });
-}
-
-export async function runParentById(id) {
-  const name    = `parent-${id}`;
-  const profile = `chrome-parent-${id}`;
-  return pm2Start({ name, args: `--parent=${id}`, profile, autorestart: false });
-}
-
-export async function runChildById(id) {
-  const name    = `child-${id}`;
-  const profile = `chrome-child-${id}`;
-  return pm2Start({ name, args: `--child=${id}`, profile, autorestart: false });
-}
+export const runChildById = (id) =>
+  pm2Start({
+    name: `child-${id}`,
+    args: `--child=${id}`,
+    profile: `chrome-child-${id}`,
+  });

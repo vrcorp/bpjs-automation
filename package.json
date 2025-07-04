@@ -11,7 +11,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "cross-env": "^7.0.3",
     "dotenv": "^17.0.1",
+    "express": "^5.1.0",
     "formdata-node": "^6.0.3",
     "mime-types": "^3.0.1",
     "mysql2": "^3.14.1",

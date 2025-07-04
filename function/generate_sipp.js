@@ -16,12 +16,13 @@ dotenv.config();
 // Konfigurasi
 const INPUT_PAGE_URL = process.env.SIPP_INPUT_URL;
 
-export async function generateSipp({ mode = "default", file = null }) {
+export async function generateSipp({ mode = "default", file = null, action="start" }) {
   try {
     const browser = await puppeteer.launch({
       headless: true, // Wajib false agar bisa input captcha manual
       defaultViewport: null,
       // args: ["--start-maximized"],
+      userDataDir: process.env.PUP_PROFILE,   // ← profil unik
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
@@ -149,7 +150,7 @@ export async function generateSipp({ mode = "default", file = null }) {
       console.log("All data processed successfully!");
       await browser.close();
     }else{
-        
+
     }
 
   } catch (error) {

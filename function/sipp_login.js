@@ -15,12 +15,24 @@ export async function login(page, attempt = 1) {
   try {
     console.log(`🔐 Login attempt #${attempt} ke ${LOGIN_URL}`);
     await safeGoto(page, LOGIN_URL);
-
+    await page.screenshot({ path: 'login_debug.png', fullPage: true });
     const captchaText = await solveCaptchaByScreenshot(page);
+    if (!captchaText) {
+      console.log("✅ Sudah login, skip captcha");
+      return true;
+    }
 
     await page.type('input[name="username"]', USERNAME);
     await page.type('input[name="password"]', PASSWORD);
     await page.type('input[name="captcha"]', captchaText);
+    
+    await page.screenshot({ path: 'debug.png', fullPage: true });
+    if (!USERNAME) {
+      console.log("⚠️ Username tidak ditemukan, skip login");
+      return false;
+    }
+
+    
 
     await Promise.all([
       page.click('button[type="submit"]'),
@@ -41,8 +53,8 @@ export async function login(page, attempt = 1) {
         console.warn("⚠️ Modal muncul: Captcha salah");
 
         // Klik OK modal biar bisa lanjut
-        const okBtn = await page.$('.swal2-confirm');
-        if (okBtn) await okBtn.click();
+        // const okBtn = await page.$('.swal2-confirm');
+        // if (okBtn) await okBtn.click();
 
         if (attempt < MAX_ATTEMPT) {
           console.log("🔄 Ulangi login...");
