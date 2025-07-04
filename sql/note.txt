@@ -1,0 +1,44 @@
+table parents
+kpj
+status (error, pending, processing, success)
+created_at
+
+table result
+parent_id
+nik
+kpj
+ttl
+email
+hp 
+notif_sipp (sukses, tidak bisa digunakan, not found)
+jenis (lasik, eklp)
+notif_lasik_eklp (Aktif/jmo/cabang)
+
+
+kota        //ambil dari dpt
+kecamatan   //ambil dari dpt
+kelurahan   //ambil dari dpt
+
+percobaan_sipp 
+percobaan_lasik_eklp
+percobaan_dpt
+sipp_status (error, pending, processing, success)
+lasik_eklp_status
+dpt_status
+created_at
+
+
+
+Generator angka sesuai rumus⏩Sipp⏩eklp/ lasik ⏩ hasil sortir keluar nik di input (auto/manual input) ⏩ dpt kpu  hasil
+(Hasil sipp)
+Nik
+Kpj
+TTL
+Email hp
+
+(Hasil dpt kpu)
+Kelurahan
+Kecamatan 
+Kota
+Aktif / tidak aktif ( hasil sortir lasik/elkp fokus aktif tidak aktif
+
