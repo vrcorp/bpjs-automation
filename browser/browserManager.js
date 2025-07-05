@@ -1,139 +1,148 @@
-// browserManager.js - Versi yang Diperbaiki
+// browserManager.js - Versi Single Browser
 import puppeteer from "puppeteer";
-import { v4 as uuidv4 } from 'uuid';
 
-// Struktur untuk menyimpan instance browser
-const browserInstances = new Map();
+// Global browser instance
+let browser = null;
+const pages = new Map(); // Menyimpan semua tab: jobId → page
 
 // Konfigurasi default
-const defaultConfig = {
-  headless: false,
-  userDataDir: `./puppeteer_profile_${uuidv4()}`,
+const browserConfig = {
+  headless: true,
+  userDataDir: './puppeteer_profile',
   executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
   args: [
     '--no-sandbox',
     '--disable-dev-shm-usage',
     '--disable-web-security',
     '--disable-features=site-per-process',
-    '--disable-setuid-sandbox'
+    '--disable-setuid-sandbox',
+    '--remote-debugging-port=9222' // Port tetap untuk debugging
   ]
 };
 
-// Fungsi untuk mendapatkan atau membuat browser instance
-async function getBrowserInstance(instanceId = 'default') {
-  if (browserInstances.has(instanceId)) {
-    const instance = browserInstances.get(instanceId);
-    if (instance.browser && instance.browser.isConnected()) {
-      return instance;
-    }
-    // Cleanup jika browser disconnected
-    browserInstances.delete(instanceId);
+// Fungsi untuk mendapatkan/membuat browser
+async function getBrowser() {
+  if (browser && browser.isConnected()) {
+    return browser;
   }
 
-  console.log(`🚀 Membuat browser instance baru: ${instanceId}`);
-  const browser = await puppeteer.launch({
-    ...defaultConfig,
-    userDataDir: `./puppeteer_profile_${instanceId}`
-  });
+  // Jika browser disconnected, cleanup dulu
+  if (browser) {
+    try {
+      await browser.close();
+    } catch (error) {
+      console.error('Error closing disconnected browser:', error);
+    }
+    browser = null;
+    pages.clear();
+  }
 
-  const newInstance = {
-    browser,
-    pages: new Map(),
-    instanceId
-  };
-
+  console.log('🚀 Launching browser...');
+  browser = await puppeteer.launch(browserConfig);
+  
   browser.on('disconnected', () => {
-    console.log(`🔌 Browser instance ${instanceId} disconnected`);
-    browserInstances.delete(instanceId);
+    console.log('🔌 Browser disconnected');
+    browser = null;
+    pages.clear();
   });
 
-  browserInstances.set(instanceId, newInstance);
-  return newInstance;
+  return browser;
 }
 
 export async function openTab(jobId, options = {}) {
-  const instanceId = options.instanceId || 'default';
-  
   try {
-    const instance = await getBrowserInstance(instanceId);
+    const browserInstance = await getBrowser();
     
     // Cek apakah tab sudah ada
-    if (instance.pages.has(jobId)) {
-      const existingPage = instance.pages.get(jobId);
+    if (pages.has(jobId)) {
+      const existingPage = pages.get(jobId);
       if (!existingPage.isClosed()) {
-        console.log(`♻️ Menggunakan tab yang sudah ada untuk jobId: ${jobId}`);
+        console.log(`♻️ Reusing existing tab for jobId: ${jobId}`);
         return existingPage;
       }
-      instance.pages.delete(jobId);
+      pages.delete(jobId);
     }
 
-    console.log(`➕ Membuka tab baru untuk jobId: ${jobId}`);
-    const page = await instance.browser.newPage();
+    console.log(`➕ Opening new tab for jobId: ${jobId}`);
+    const page = await browserInstance.newPage();
     
     // Konfigurasi halaman
     await page.setViewport(options.viewport || { width: 1366, height: 768 });
     await page.setUserAgent(options.userAgent || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
     
-    // Simpan page ke instance
-    instance.pages.set(jobId, page);
+    // Simpan page
+    pages.set(jobId, page);
     
     // Handler untuk ketika page ditutup
     page.on('close', () => {
-      instance.pages.delete(jobId);
-      console.log(`🗑️ Tab ${jobId} ditutup`);
+      pages.delete(jobId);
+      console.log(`🗑️ Tab ${jobId} closed`);
+      
+      // Jika tidak ada tab lagi, tutup browser setelah delay
+      if (pages.size === 0) {
+        setTimeout(async () => {
+          if (pages.size === 0 && browser) {
+            await closeBrowser();
+          }
+        }, 5000);
+      }
     });
 
     return page;
   } catch (error) {
-    console.error(`❌ Gagal membuka tab untuk ${jobId}:`, error);
+    console.error(`❌ Failed to open tab for ${jobId}:`, error);
     throw error;
   }
 }
 
-export async function closeTab(jobId, instanceId = 'default') {
-  const instance = browserInstances.get(instanceId);
-  if (!instance) {
-    console.log(`⚠️ Instance ${instanceId} tidak ditemukan`);
-    return;
-  }
-
-  const page = instance.pages.get(jobId);
+export async function closeTab(jobId) {
+  const page = pages.get(jobId);
   if (!page) {
-    console.log(`⚠️ Tab ${jobId} tidak ditemukan`);
+    console.log(`⚠️ Tab ${jobId} not found`);
     return;
   }
 
   try {
     await page.close();
-    console.log(`✅ Tab ${jobId} berhasil ditutup`);
+    console.log(`✅ Tab ${jobId} closed successfully`);
   } catch (error) {
-    console.error(`❌ Gagal menutup tab ${jobId}:`, error);
+    console.error(`❌ Failed to close tab ${jobId}:`, error);
   }
 }
 
-export async function closeBrowser(instanceId = 'default') {
-  const instance = browserInstances.get(instanceId);
-  if (!instance) return;
+export async function closeBrowser() {
+  if (!browser) return;
 
   try {
-    await instance.browser.close();
-    console.log(`✅ Browser instance ${instanceId} berhasil ditutup`);
+    // Tutup semua tab terlebih dahulu
+    for (const [jobId, page] of pages) {
+      try {
+        await page.close();
+      } catch (error) {
+        console.error(`Error closing tab ${jobId}:`, error);
+      }
+    }
+    pages.clear();
+    
+    await browser.close();
+    console.log('✅ Browser closed successfully');
   } catch (error) {
-    console.error(`❌ Gagal menutup browser instance ${instanceId}:`, error);
+    console.error('❌ Failed to close browser:', error);
   } finally {
-    browserInstances.delete(instanceId);
+    browser = null;
   }
 }
 
-// Fungsi untuk mendapatkan status browser
 export function getBrowserStatus() {
-  const status = {};
-  for (const [instanceId, instance] of browserInstances) {
-    status[instanceId] = {
-      isConnected: instance.browser.isConnected(),
-      activeTabs: instance.pages.size,
-      tabIds: Array.from(instance.pages.keys())
-    };
-  }
-  return status;
+  return {
+    isConnected: browser ? browser.isConnected() : false,
+    activeTabs: pages.size,
+    tabIds: Array.from(pages.keys()),
+    browserPid: browser ? browser.process().pid : null
+  };
 }
+
+// Cleanup saat proses berhenti
+process.on('exit', closeBrowser);
+process.on('SIGINT', closeBrowser);
+process.on('SIGTERM', closeBrowser);

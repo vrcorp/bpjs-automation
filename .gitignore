@@ -1,8 +1,13 @@
 /hasil_scraping_*.xlsx
 /~$hasil_scraping_*.xlsx
+/~$hasil_sipp_*.xlsx
+/~$hasil_lasik_*.xlsx
 **/node_modules/
 /puppeteer_profile_child-instance-24/
 /puppeteer_profile_generate-instance/
 /captcha/
 /chrome/
 node_modules/
+/log.txt
+/login_debug.png
+/puppeteer_profile**/

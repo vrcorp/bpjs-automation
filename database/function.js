@@ -181,24 +181,43 @@ export async function updateDPT(data, parentId) {
   
 }
 
-export async function saveLasik(lasikResult) {
+export async function updateLasikStatus(childId, notifLasik, statusLasik){
   // Fungsi ini akan mengupdate data lasik/eklp pada tabel result berdasarkan id result
   const query = `
     UPDATE result
     SET
-      jenis = ?,
-      notif_lasik_eklp = ?,
-      percobaan_lasik_eklp = ?,
-      lasik_eklp_status = ?
+      notif_lasik = ?,
+      percobaan_lasik = ?,
+      lasik_status = ?
     WHERE id = ?
   `;
 
   const values = [
-    lasikResult.jenis,                // 'lasik' atau 'eklp'
-    lasikResult.notif_lasik_eklp,     // 'Aktif', 'jmo', atau 'cabang'
-    lasikResult.percobaan_lasik_eklp, // INT
-    lasikResult.lasik_eklp_status,    // 'error', 'pending', 'processing', 'success'
-    lasikResult.id                    // id pada tabel result
+    notifLasik,     // 'Aktif', 'jmo', atau 'cabang'
+    1, // INT
+    statusLasik,    // 'error', 'pending', 'processing', 'success'
+    childId                  // id pada tabel result
+  ];
+
+  await db.execute(query, values);
+}
+
+export async function updateEklpStatus(childId, notifEklp, statusEklp){
+  // Fungsi ini akan mengupdate data lasik/eklp pada tabel result berdasarkan id result
+  const query = `
+    UPDATE result
+    SET
+      notif_eklp = ?,
+      percobaan_eklp = ?,
+      eklp_status = ?
+    WHERE id = ?
+  `;
+
+  const values = [
+    notifEklp,     // 'Aktif', 'jmo', atau 'cabang'
+    1, // INT
+    statusEklp,    // 'error', 'pending', 'processing', 'success'
+    childId                  // id pada tabel result
   ];
 
   await db.execute(query, values);

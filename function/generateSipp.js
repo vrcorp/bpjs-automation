@@ -22,15 +22,13 @@ export async function generateSipp({
   action = "start",
   config = null
 } = {}) {
-  const jobId = "generate";
-  const instanceId = "generate-instance"; // ID unik untuk instance generate
+  const jobId = "generate-sipp";
   
   try {
     /* ─────────────  START  ───────────── */
     if (action === "start") {
       // Konfigurasi khusus untuk generate (desktop-like)
       const page = await openTab(jobId, {
-        instanceId,
         viewport: { width: 1920, height: 1080 },
         userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
       });
@@ -51,7 +49,7 @@ export async function generateSipp({
     
     /* ─────────────  STOP  ───────────── */
     if (action === "stop") {
-      await closeTab(jobId, instanceId);
+      await closeTab(jobId);
       return;
     }
     
@@ -60,13 +58,14 @@ export async function generateSipp({
   } catch (err) {
     console.error("❌ Error in generateSipp:", err);
     // pastikan browser ditutup kalau error
-    await closeTab(jobId, instanceId);
+    await closeTab(jobId);
     throw err; // Re-throw untuk handling di level atas
   }
 }
 
 /* ───────────────── helper ───────────────── */
 async function runDefaultFlow(page) {
+  const induxx = 11017;
   const x = 43;
   const pad2 = (n) => n.toString().padStart(2, "0");
   const parent_z = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -87,7 +86,7 @@ async function runDefaultFlow(page) {
     for (let pIdx = 0; pIdx < parent_z.length; pIdx++) {
       const parent = parent_z[pIdx];
       const zParent = parent;
-      const parentKpj = Number(`11017${pad2(x)}${pad2(y)}${pad2(zParent)}`);
+      const parentKpj = Number(`${induxx}${pad2(x)}${pad2(y)}${pad2(zParent)}`);
       
       // check status db
       const hasChecked = await checkParentStatus(parentKpj);

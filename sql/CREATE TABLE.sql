@@ -14,19 +14,27 @@ CREATE TABLE result (
   ttl VARCHAR(100), -- Tempat Tanggal Lahir
   email VARCHAR(100),
   hp VARCHAR(20),
+
   notif_sipp ENUM('Sukses','Tidak bisa digunakan','Not Found','Not Found Modal','ERROR'),
-  jenis ENUM('lasik', 'eklp'),
-  notif_lasik_eklp ENUM('Aktif', 'jmo', 'cabang'),
+
+  notif_lasik ENUM('Aktif', 'jmo', 'cabang','not_found','15jt'),
+  notif_eklp ENUM('aktif', 'tidak_aktif', 'not_found'),
+
   kota VARCHAR(100),
   kecamatan VARCHAR(100),
   kelurahan VARCHAR(100),
+
   percobaan_sipp INT,
-  percobaan_lasik_eklp INT,
+  percobaan_lasik INT,
+  percobaan_eklp INT,
   percobaan_dpt INT,
+
   sipp_status ENUM('error', 'pending', 'processing', 'success','not found'),
-  lasik_eklp_status ENUM('error', 'pending', 'processing', 'success'),
+  lasik_status ENUM('error', 'pending', 'processing', 'success'),
+  eklp_status ENUM('error', 'pending', 'processing', 'success'),
   dpt_status ENUM('error', 'pending', 'processing', 'success'),
+
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  
+
   FOREIGN KEY (parent_id) REFERENCES parents(id) ON DELETE SET NULL
 );

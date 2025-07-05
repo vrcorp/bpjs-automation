@@ -34,13 +34,10 @@ export async function getPendingChildren(parentId) {
 
 export async function resumeChild({ childId, action = 'start', config = null }) {
   const jobId = `child-${childId}`;
-  const instanceId = `child-instance-${childId}`; // ID unik untuk instance child
-  console.log(jobId, instanceId);
   
   try {
     if (action === "stop") {
-      await closeTab(jobId, instanceId);
-      await closeBrowser(instanceId);
+      await closeTab(jobId);
     }
     
     // Validasi childId
@@ -51,7 +48,6 @@ export async function resumeChild({ childId, action = 'start', config = null }) 
     console.log(`🔄 Starting resume for child ID: ${childId}`);
     
     const page = await openTab(jobId, {
-      instanceId,
       viewport: { width: 414, height: 896 },
       userAgent: "Mozilla/5.0 (Linux; Android 11; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
     });
@@ -65,13 +61,13 @@ export async function resumeChild({ childId, action = 'start', config = null }) 
     
     await runDefaultFlow(page, childId);
     
-    await closeTab(jobId, instanceId);
+    await closeTab(jobId);
     console.log(`✅ Resume child ${childId} completed successfully`);
     
   } catch (err) {
     console.error(`❌ Error resuming child ${childId}:`, err);
     // pastikan browser ditutup kalau error
-    await closeTab(jobId, instanceId);
+    await closeTab(jobId);
     throw err; // Re-throw untuk handling di level atas
   }
 }
