@@ -1,5 +1,5 @@
 import express from "express";
-import {resumeChild} from "./function/sipp_resume.js";
+import {resumeChild} from "./function/resumeChild_sipp.js";
 import {generateSipp} from "./function/generateSipp.js";
 import bodyParser from "body-parser";
 
@@ -25,6 +25,12 @@ app.post("/generate", async (req, res) => {
   }
 });
 
+app.post('/generate/stop', async (_, res) => {
+  await generateSipp({ action: 'stop' });
+  res.json({ status: 'OK', msg: 'tab generate ditutup' });
+});
+
+
 
 /* ───── resume parent by id ───── */
 app.post("/resume-parent/:id", async (req, res) => {
@@ -37,14 +43,14 @@ app.post("/resume-parent/:id", async (req, res) => {
 });
 
 /* ───── resume child by id ───── */
-app.post("/resume-child/:id", async (req, res) => {
-  try {
-    const childId = req.params.id;
-    resumeChild({childId});
-    res.json({ status: "OK", message: "Job diterima" });
-  } catch (e) {
-    res.status(500).json({ status: "ERROR", message: e.message });
-  }
+app.post('/resume-child/:id', async (req, res) => {
+  resumeChild({ childId: req.params.id });
+  res.status(202).json({ status: 'OK', msg: 'child resume jalan' });
+});
+
+app.post('/resume-child/:id/stop', async (req, res) => {
+  await resumeChild({ childId: req.params.id, action: 'stop' });
+  res.json({ status: 'OK', msg: 'tab child ditutup' });
 });
 
 app.listen(3000, () => {

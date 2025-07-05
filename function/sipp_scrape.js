@@ -6,6 +6,7 @@ const URL_SETELAH_POPUP = process.env.SIPP_SETELAH_POPUP;
 
 export async function inputDataAndScrape(page, data, tried = 1) {
   try {
+
     await page.waitForSelector(
       ".btn.btn-primary.btn-bordered.waves-effect.w-md",
       { timeout: 5000 }
