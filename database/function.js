@@ -135,6 +135,19 @@ export async function checkChildStatus(kpj){
   }
 }
 
+export async function checkLasikStatus(kpj) {
+  // 查询 result 表，返回指定 kpj 的 lasik_status
+  const query = `
+    SELECT lasik_status FROM result WHERE kpj = ?
+  `;
+  const [rows] = await db.execute(query, [kpj]);
+  if (rows.length > 0) {
+    return rows[0].lasik_status;
+  } else {
+    return null;
+  }
+}
+
 export async function checkDPTStatus(nik, parentId) {
   // 查询 result 表，检查指定 nik 和 parentId 的 dpt_status
   const query = `
@@ -246,5 +259,18 @@ export async function saveDpt(dptResult) {
   ];
 
   await db.execute(query, values);
+}
+
+export async function checkEklpStatus(kpj) {
+  // 查询 result 表，返回指定 kpj 的 eklp_status
+  const query = `
+    SELECT eklp_status FROM result WHERE kpj = ?
+  `;
+  const [rows] = await db.execute(query, [kpj]);
+  if (rows.length > 0) {
+    return rows[0].eklp_status;
+  } else {
+    return null;
+  }
 }
 

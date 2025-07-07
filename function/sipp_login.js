@@ -15,7 +15,7 @@ export async function login(page, attempt = 1) {
   try {
     console.log(`🔐 Login attempt #${attempt} ke ${LOGIN_URL}`);
     await safeGoto(page, LOGIN_URL);
-    await page.screenshot({ path: 'login_debug.png', fullPage: true });
+    // await page.screenshot({ path: 'login_debug.png', fullPage: true });
     const captchaText = await solveCaptchaByScreenshot(page);
     if (!captchaText) {
       console.log("✅ Sudah login, skip captcha");

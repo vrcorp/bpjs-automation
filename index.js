@@ -3,7 +3,7 @@ import {resumeChild} from "./function/resumeChild_sipp.js";
 import {generateSipp} from "./function/generateSipp.js";
 import {runParentById} from "./function/resumeParent_sipp.js";
 import {scrapeDpt} from "./function/dptScrape.js";
-import {scrapeLasik} from "./function/lasikScraper.js";
+import {scrapeLasik} from "./function/lasikScrape.js";
 import {scrapeEklp} from "./function/eklpScraper.js";
 import bodyParser from "body-parser";
 

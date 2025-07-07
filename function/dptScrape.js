@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
-import { safeGoto } from "./config.js";
-import { updateDPT, checkDPTStatus } from './database/function.js';
+import { safeGoto } from "../function/config.js";
+import { updateDPT, checkDPTStatus } from '../database/function.js';
 import db from "../database/db.js";
 dotenv.config();
 import { openTab, closeTab } from "../browser/browserManager.js";

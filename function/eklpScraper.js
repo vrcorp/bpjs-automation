@@ -2,7 +2,7 @@
 import dotenv from "dotenv";
 import { solveCaptchaByScreenshot } from '../function/captcha_solver.js';
 import { safeGoto } from '../function/config.js';
-import { updateEklpStatus, checkEklpStatus } from './database/function.js';
+import { updateEklpStatus, checkEklpStatus } from '../database/function.js';
 import { openTab, closeTab } from "../browser/browserManager.js";
 import db from "../database/db.js";
 

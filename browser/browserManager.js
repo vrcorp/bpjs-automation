@@ -7,16 +7,16 @@ const pages = new Map(); // Menyimpan semua tab: jobId → page
 
 // Konfigurasi default
 const browserConfig = {
-  headless: true,
+  headless: false,
+  defaultViewport: null,
   userDataDir: './puppeteer_profile',
   executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
   args: [
-    '--no-sandbox',
-    '--disable-dev-shm-usage',
-    '--disable-web-security',
-    '--disable-features=site-per-process',
-    '--disable-setuid-sandbox',
-    '--remote-debugging-port=9222' // Port tetap untuk debugging
+    "--no-sandbox",
+    '--window-size=1366,768',
+    '--force-device-scale-factor=1',
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
   ]
 };
 
@@ -67,8 +67,13 @@ export async function openTab(jobId, options = {}) {
     const page = await browserInstance.newPage();
     
     // Konfigurasi halaman
-    await page.setViewport(options.viewport || { width: 1366, height: 768 });
-    await page.setUserAgent(options.userAgent || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    // await page.setViewport(options.viewport || { width: 1366, height: 768 });
+    // await page.setUserAgent(options.userAgent || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+    );
+    await page.setViewport({ width: 1366, height: 768 });
+    
     
     // Simpan page
     pages.set(jobId, page);

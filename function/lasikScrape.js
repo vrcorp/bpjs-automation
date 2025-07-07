@@ -1,7 +1,7 @@
 // lasikScraper.js
 import dotenv from "dotenv";
 import { safeGoto } from "../function/config.js";
-import { updateLasikStatus, checkLasikStatus } from './database/function.js';
+import { updateLasikStatus, checkLasikStatus } from '../database/function.js';
 import { openTab, closeTab } from "../browser/browserManager.js";
 import db from "../database/db.js";
 
@@ -90,6 +90,9 @@ async function scrapeSingleLasik(page, childData, attempt = 1) {
             else if (modalContent.includes('15 juta') || modalContent.includes('15jt')) status = 'lebih_15jt';
             else if (modalContent.includes('masih aktif')) status = 'aktif';
             else if (modalContent.includes('Kantor Cabang')) status = 'cabang';
+            else {
+                status = 'not_found';
+            }
         }
 
         // Update database
