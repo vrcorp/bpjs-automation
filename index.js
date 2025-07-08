@@ -143,6 +143,7 @@ app.post('/export-all', async (req, res) => {
   const mode = req.body.mode || 'sipp_lasik_dpt';
   const parentId = req.body.parentId || null;
   const is_file = req.body.is_file ?? false;
+  console.log(parentId, mode, is_file);
   let columns = [
     { header: 'NIK', key: 'nik' },
     { header: 'KPJ', key: 'kpj' },
@@ -162,12 +163,14 @@ app.post('/export-all', async (req, res) => {
     FROM result r
     JOIN parents p ON r.parent_id = p.id
     WHERE r.kpj IS NOT NULL AND r.kpj != '' AND r.nama IS NOT NULL AND r.nama != ''
-      AND p.is_file = ?
   `;
-  let params = [is_file ? 1 : 0];
+  let params = [];
   if (parentId !== null) {
     query += ' AND r.parent_id = ?';
     params.push(parentId);
+  } else {
+    query += ' AND p.is_file = ?';
+    params.push(is_file ? 1 : 0);
   }
   const [rows] = await db.query(query, params);
 
@@ -183,6 +186,7 @@ app.post('/export-all', async (req, res) => {
   // 数据
   rows.forEach(row => {
     const data = columns.map(col => row[col.key] || 'N/A');
+    console.log('导出数据:', data);
     sheet.addRow(data);
   });
   // 设置响应头
