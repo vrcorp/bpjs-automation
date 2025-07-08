@@ -3,16 +3,25 @@ import path from "path";
 import { Client } from "@gradio/client";
 import { v4 as uuidv4 } from "uuid";
 
-export async function solveCaptchaByScreenshot(page) {
+export async function solveCaptchaByScreenshot(page, jenis = "sipp") {
   // 1️⃣  Pastikan gambar sudah betul-betul load & ukurannya final
-  await page.waitForFunction(() => {
-    const img = document.querySelector('#img_captcha');
+  await page.waitForFunction((jenis) => {
+    let img;
+    if (jenis === "sipp") {
+      img = document.querySelector('#img_captcha');
+    } else {
+      img = Array.from(document.querySelectorAll('img')).find(i => i.alt === 'Captcha');
+    }
     return img && img.complete && img.naturalWidth > 30;   // sesuaikan kalau perlu
-  }, { timeout: 10_000 });
+  }, { timeout: 5_000 });
 
   // 2️⃣  Copy piksel ke <canvas> & ambil DataURL (PNG/JPEG)
-  const dataUrl = await page.evaluate(() => {
-    const img = document.querySelector('#img_captcha');
+  const dataUrl = await page.evaluate((jenis) => {
+    if (jenis === "sipp") {
+      img = document.querySelector('#img_captcha');
+    } else {
+      img = Array.from(document.querySelectorAll('img')).find(i => i.alt === 'Captcha');
+    }
     const c   = document.createElement('canvas');
     c.width  = img.naturalWidth;
     c.height = img.naturalHeight;

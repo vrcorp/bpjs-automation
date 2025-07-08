@@ -22,6 +22,12 @@ export async function login(page, attempt = 1) {
       return true;
     }
 
+    // 检查用户名输入框是否存在，如果不存在则说明已经登录，直接返回
+    const usernameInput = await page.$('input[name="username"]');
+    if (!usernameInput) {
+      console.log("✅ Sudah login (input username tidak ditemukan), skip login");
+      return true;
+    }
     await page.type('input[name="username"]', USERNAME);
     await page.type('input[name="password"]', PASSWORD);
     await page.type('input[name="captcha"]', captchaText);
@@ -36,7 +42,7 @@ export async function login(page, attempt = 1) {
 
     await Promise.all([
       page.click('button[type="submit"]'),
-      page.waitForNavigation({ timeout: 10000 }).catch(() => {}) // lanjut walau timeout
+      page.waitForNavigation({ timeout: 5000 }).catch(() => {}) // lanjut walau timeout
     ]);
 
     // Cek apakah muncul modal error (misalnya captcha salah)

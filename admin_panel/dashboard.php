@@ -25,7 +25,7 @@ $stats = $stmt->fetch();
             </button>
         </div>
     </div>
-    
+
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
         <!-- Total Parents Card -->
@@ -42,18 +42,18 @@ $stats = $stmt->fetch();
             </div>
             <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
                 <div class="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div class="h-full bg-blue-500 rounded-full" style="width: <?= $stats['total_parents'] ? ($stats['completed_parents']/$stats['total_parents'])*100 : 0 ?>%"></div>
+                    <div class="h-full bg-blue-500 rounded-full" style="width: <?= $stats['total_parents'] ? ($stats['completed_parents'] / $stats['total_parents']) * 100 : 0 ?>%"></div>
                 </div>
             </div>
         </div>
-        
+
         <!-- SIPP Card -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 hover:shadow-md transition-all duration-300 group">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Completed SIPP</p>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white"><?= $stats['completed_sipp'] ?></h3>
-                    <p class="text-xs text-gray-400 mt-1"><?= round(($stats['completed_sipp']/$stats['total_parents'])*100, 1) ?>% success</p>
+                    <p class="text-xs text-gray-400 mt-1"><?= round(($stats['completed_sipp'] / $stats['total_parents']) * 100, 1) ?>% success</p>
                 </div>
                 <div class="w-12 h-12 rounded-lg bg-green-50 dark:bg-green-900/30 flex items-center justify-center group-hover:bg-green-100 dark:group-hover:bg-green-900/50 transition-colors">
                     <i data-lucide="check-circle" class="w-6 h-6 text-green-600 dark:text-green-400"></i>
@@ -61,18 +61,18 @@ $stats = $stmt->fetch();
             </div>
             <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
                 <div class="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div class="h-full bg-green-500 rounded-full" style="width: <?= $stats['total_parents'] ? ($stats['completed_sipp']/$stats['total_parents'])*100 : 0 ?>%"></div>
+                    <div class="h-full bg-green-500 rounded-full" style="width: <?= $stats['total_parents'] ? ($stats['completed_sipp'] / $stats['total_parents']) * 100 : 0 ?>%"></div>
                 </div>
             </div>
         </div>
-        
+
         <!-- LASIK Card -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 hover:shadow-md transition-all duration-300 group">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Completed LASIK</p>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white"><?= $stats['completed_lasik'] ?></h3>
-                    <p class="text-xs text-gray-400 mt-1"><?= round(($stats['completed_lasik']/$stats['total_parents'])*100, 1) ?>% success</p>
+                    <p class="text-xs text-gray-400 mt-1"><?= round(($stats['completed_lasik'] / $stats['total_parents']) * 100, 1) ?>% success</p>
                 </div>
                 <div class="w-12 h-12 rounded-lg bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center group-hover:bg-purple-100 dark:group-hover:bg-purple-900/50 transition-colors">
                     <i data-lucide="eye" class="w-6 h-6 text-purple-600 dark:text-purple-400"></i>
@@ -80,18 +80,18 @@ $stats = $stmt->fetch();
             </div>
             <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
                 <div class="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div class="h-full bg-purple-500 rounded-full" style="width: <?= $stats['total_parents'] ? ($stats['completed_lasik']/$stats['total_parents'])*100 : 0 ?>%"></div>
+                    <div class="h-full bg-purple-500 rounded-full" style="width: <?= $stats['total_parents'] ? ($stats['completed_lasik'] / $stats['total_parents']) * 100 : 0 ?>%"></div>
                 </div>
             </div>
         </div>
-        
+
         <!-- EKLP Card -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 hover:shadow-md transition-all duration-300 group">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Completed EKLP</p>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white"><?= $stats['completed_eklp'] ?></h3>
-                    <p class="text-xs text-gray-400 mt-1"><?= round(($stats['completed_eklp']/$stats['total_parents'])*100, 1) ?>% success</p>
+                    <p class="text-xs text-gray-400 mt-1"><?= round(($stats['completed_eklp'] / $stats['total_parents']) * 100, 1) ?>% success</p>
                 </div>
                 <div class="w-12 h-12 rounded-lg bg-orange-50 dark:bg-orange-900/30 flex items-center justify-center group-hover:bg-orange-100 dark:group-hover:bg-orange-900/50 transition-colors">
                     <i data-lucide="book-open" class="w-6 h-6 text-orange-600 dark:text-orange-400"></i>
@@ -99,18 +99,18 @@ $stats = $stmt->fetch();
             </div>
             <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
                 <div class="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div class="h-full bg-orange-500 rounded-full" style="width: <?= $stats['total_parents'] ? ($stats['completed_eklp']/$stats['total_parents'])*100 : 0 ?>%"></div>
+                    <div class="h-full bg-orange-500 rounded-full" style="width: <?= $stats['total_parents'] ? ($stats['completed_eklp'] / $stats['total_parents']) * 100 : 0 ?>%"></div>
                 </div>
             </div>
         </div>
-        
+
         <!-- DPT Card -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 hover:shadow-md transition-all duration-300 group">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Completed DPT</p>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white"><?= $stats['completed_dpt'] ?></h3>
-                    <p class="text-xs text-gray-400 mt-1"><?= round(($stats['completed_dpt']/$stats['total_parents'])*100, 1) ?>% success</p>
+                    <p class="text-xs text-gray-400 mt-1"><?= round(($stats['completed_dpt'] / $stats['total_parents']) * 100, 1) ?>% success</p>
                 </div>
                 <div class="w-12 h-12 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 flex items-center justify-center group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/50 transition-colors">
                     <i data-lucide="shield" class="w-6 h-6 text-yellow-600 dark:text-yellow-400"></i>
@@ -118,63 +118,69 @@ $stats = $stmt->fetch();
             </div>
             <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
                 <div class="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div class="h-full bg-yellow-500 rounded-full" style="width: <?= $stats['total_parents'] ? ($stats['completed_dpt']/$stats['total_parents'])*100 : 0 ?>%"></div>
+                    <div class="h-full bg-yellow-500 rounded-full" style="width: <?= $stats['total_parents'] ? ($stats['completed_dpt'] / $stats['total_parents']) * 100 : 0 ?>%"></div>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <!-- Control Buttons -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
         <h2 class="text-lg md:text-xl font-semibold mb-4 text-gray-800 dark:text-white">Process Controls</h2>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Generate Control -->
-            <div class="flex flex-col">
-                <button id="toggleGenerate" class="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
-                    <span id="generateText" class="text-sm md:text-base font-medium">Start Generate</span>
-                    <i data-lucide="play" class="w-4 h-4 ml-2"></i>
-                </button>
-                <span class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">SIPP Data Generation</span>
-            </div>
-            
-            <!-- LASIK Control -->
-            <div class="flex flex-col">
-                <button id="toggleLasik" class="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-lg hover:from-green-700 hover:to-green-600 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
-                    <span id="lasikText" class="text-sm md:text-base font-medium">Start LASIK</span>
-                    <i data-lucide="play" class="w-4 h-4 ml-2"></i>
-                </button>
-                <span class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">LASIK Processing</span>
-            </div>
-            
-            <!-- EKLP Control -->
-            <div class="flex flex-col">
-                <button id="toggleEklp" class="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-lg hover:from-purple-700 hover:to-purple-600 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
-                    <span id="eklpText" class="text-sm md:text-base font-medium">Start EKLP</span>
-                    <i data-lucide="play" class="w-4 h-4 ml-2"></i>
-                </button>
-                <span class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">EKLP Processing</span>
-            </div>
-            
-            <!-- DPT Control -->
-            <div class="flex flex-col">
-                <button id="toggleDpt" class="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-yellow-600 to-yellow-500 text-white rounded-lg hover:from-yellow-700 hover:to-yellow-600 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
-                    <span id="dptText" class="text-sm md:text-base font-medium">Start DPT</span>
-                    <i data-lucide="play" class="w-4 h-4 ml-2"></i>
-                </button>
-                <span class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">DPT Processing</span>
-            </div>
-        </div>
-        
-        <!-- Export Button -->
-        <div class="mt-6 flex justify-center">
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <!-- Generate All Control -->
+            <button id="openGenerateAllModal" class="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
+                <span class="text-sm md:text-base font-medium">Generate Massal Sekali Klik</span>
+                <i data-lucide="zap" class="w-4 h-4 ml-2"></i>
+            </button>
+            <!-- Export Button -->
             <button id="exportBtn" class="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-gray-800 to-gray-700 text-white rounded-lg hover:from-gray-900 hover:to-gray-800 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
-                <span class="text-sm md:text-base font-medium">Export All Data</span>
+                <span class="text-sm md:text-base font-medium">Ekspor Semua Data</span>
                 <i data-lucide="download" class="w-4 h-4 ml-2"></i>
+            </button>
+            <button id="uploadFileBtn" class="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-700 to-green-600 text-white rounded-lg hover:from-green-800 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
+                <span class="text-sm md:text-base font-medium">Upload File</span>
+                <i data-lucide="upload" class="w-4 h-4 ml-2"></i>
             </button>
         </div>
     </div>
-    
+
+    <!-- Generate All Modal -->
+    <div id="generateAllModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl transform transition-all duration-300 ease-in-out w-full max-w-md">
+            <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Pilih Proses Generate Massal</h3>
+                <button id="closeGenerateAllModal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="space-y-3">
+                    <div class="flex items-center p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <input type="radio" id="mode1" name="generateMode" value="sipp_lasik_dpt" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700" checked>
+                        <label for="mode1" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">SIPP → LASIK → DPT</label>
+                    </div>
+                    <div class="flex items-center p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <input type="radio" id="mode2" name="generateMode" value="sipp_dpt" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
+                        <label for="mode2" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">SIPP → DPT</label>
+                    </div>
+                    <div class="flex items-center p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <input type="radio" id="mode3" name="generateMode" value="sipp_eklp_dpt" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
+                        <label for="mode3" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">SIPP → EKLP → DPT</label>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button id="cancelGenerateAll" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                        Batal
+                    </button>
+                    <button id="confirmGenerateAll" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-md hover:from-blue-700 hover:to-blue-600 transition-all duration-200 shadow-md hover:shadow-lg">
+                        Mulai Generate
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Recent Parents -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
@@ -186,7 +192,7 @@ $stats = $stmt->fetch();
                 View All <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
             </a>
         </div>
-        
+
         <!-- Desktop Table -->
         <div class="hidden md:block overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -203,64 +209,103 @@ $stats = $stmt->fetch();
                     <?php
                     $stmt = $pdo->query("SELECT p.*, 
                         (SELECT COUNT(*) FROM result WHERE parent_id = p.id) as child_count
-                        FROM parents p ORDER BY created_at DESC LIMIT 5");
+                        FROM parents p WHERE status = 'success' ORDER BY created_at DESC LIMIT 5");
                     while ($parent = $stmt->fetch()):
                     ?>
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium"><?= htmlspecialchars($parent['kpj']) ?></td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                <?= $parent['status'] === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 
-                                   ($parent['status'] === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100') ?>">
-                                <?= ucfirst($parent['status']) ?>
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400"><?= $parent['child_count'] ?></td>
-                        <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400"><?= date('Y-m-d H:i', strtotime($parent['created_at'])) ?></td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <a href="children.php?parent_id=<?= $parent['id'] ?>" class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 transition-colors">
-                                <i data-lucide="list" class="w-4 h-4 mr-1"></i> View
-                            </a>
-                        </td>
-                    </tr>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium"><?= htmlspecialchars($parent['kpj']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                <?= $parent['status'] === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : ($parent['status'] === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100') ?>">
+                                    <?= ucfirst($parent['status']) ?>
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400"><?= $parent['child_count'] ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400"><?= date('Y-m-d H:i', strtotime($parent['created_at'])) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="children.php?parent_id=<?= $parent['id'] ?>" class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 transition-colors">
+                                    <i data-lucide="list" class="w-4 h-4 mr-1"></i> View
+                                </a>
+                            </td>
+                        </tr>
                     <?php endwhile; ?>
                 </tbody>
             </table>
         </div>
-        
+
         <!-- Mobile Cards -->
         <div class="md:hidden grid grid-cols-1 gap-4 p-4">
             <?php
             $stmt = $pdo->query("SELECT p.*, 
                 (SELECT COUNT(*) FROM result WHERE parent_id = p.id) as child_count
-                FROM parents p ORDER BY created_at DESC LIMIT 5");
+                FROM parents p WHERE status = 'success' ORDER BY created_at DESC LIMIT 5");
             while ($parent = $stmt->fetch()):
             ?>
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="font-medium text-gray-900 dark:text-white"><?= htmlspecialchars($parent['kpj']) ?></h3>
-                        <div class="flex items-center mt-1">
-                            <span class="px-2 py-1 text-xs font-semibold rounded-full 
-                                <?= $parent['status'] === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 
-                                   ($parent['status'] === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100') ?>">
-                                <?= ucfirst($parent['status']) ?>
-                            </span>
-                            <span class="ml-2 text-sm text-gray-500 dark:text-gray-400"><?= $parent['child_count'] ?> children</span>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-medium text-gray-900 dark:text-white"><?= htmlspecialchars($parent['kpj']) ?></h3>
+                            <div class="flex items-center mt-1">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                                <?= $parent['status'] === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : ($parent['status'] === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100') ?>">
+                                    <?= ucfirst($parent['status']) ?>
+                                </span>
+                                <span class="ml-2 text-sm text-gray-500 dark:text-gray-400"><?= $parent['child_count'] ?> children</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-gray-400 dark:text-gray-500"><?= date('Y-m-d H:i', strtotime($parent['created_at'])) ?></p>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <p class="text-xs text-gray-400 dark:text-gray-500"><?= date('Y-m-d H:i', strtotime($parent['created_at'])) ?></p>
+
+                    <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                        <a href="children.php?parent_id=<?= $parent['id'] ?>" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm flex items-center">
+                            <i data-lucide="list" class="w-4 h-4 mr-1"></i> View Details
+                        </a>
                     </div>
                 </div>
-                
-                <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-                    <a href="children.php?parent_id=<?= $parent['id'] ?>" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm flex items-center">
-                        <i data-lucide="list" class="w-4 h-4 mr-1"></i> View Details
-                    </a>
-                </div>
-            </div>
             <?php endwhile; ?>
+        </div>
+    </div>
+
+    <!-- Induk Table Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 overflow-hidden my-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div>
+                <h2 class="text-lg md:text-xl font-semibold text-gray-800 dark:text-white">Manajemen Induk</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Kelola data induk, pilih, tambah, dan cari</p>
+            </div>
+            <button id="addIndukBtn" class="mt-2 sm:mt-0 inline-flex items-center px-3 py-2 text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors bg-green-100 dark:bg-green-900 rounded-lg">
+                <i data-lucide="plus" class="w-4 h-4 mr-1"></i> Tambah Induk
+            </button>
+        </div>
+        <div class="px-6 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
+                <input id="searchInduk" type="text" placeholder="Cari induk..." class="w-full md:w-64 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200" />
+            </div>
+            <!-- Desktop Table -->
+            <div class="hidden md:block overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" id="indukTable">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Induk</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Selected</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Created</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700" id="indukTableBody">
+                        <!-- Data will be loaded by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Mobile Cards -->
+            <div class="md:hidden grid grid-cols-1 gap-4" id="indukCards">
+                <!-- Data will be loaded by JS -->
+            </div>
+            <!-- Pagination -->
+            <div class="flex justify-center mt-4" id="indukPagination"></div>
         </div>
     </div>
 </div>
@@ -274,25 +319,25 @@ $stats = $stmt->fetch();
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
-        
+
         <div class="p-6">
             <div class="space-y-3">
                 <div class="flex items-center p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     <input type="radio" id="exportOption1" name="exportOption" value="sipp_lasik_dpt" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700" checked>
                     <label for="exportOption1" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">SIPP → LASIK → DPT</label>
                 </div>
-                
+
                 <div class="flex items-center p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     <input type="radio" id="exportOption2" name="exportOption" value="sipp_dpt" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
                     <label for="exportOption2" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">SIPP → DPT</label>
                 </div>
-                
+
                 <div class="flex items-center p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     <input type="radio" id="exportOption3" name="exportOption" value="sipp_eklp_dpt" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
                     <label for="exportOption3" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">SIPP → EKLP → DPT</label>
                 </div>
             </div>
-            
+
             <div class="mt-6 flex justify-end space-x-3">
                 <button id="cancelExport" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
                     Cancel
@@ -305,43 +350,102 @@ $stats = $stmt->fetch();
     </div>
 </div>
 
+
+
+<!-- Modal for Add Induk -->
+<div id="addIndukModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md p-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Tambah Induk Baru</h3>
+        <input id="newIndukInput" type="text" placeholder="Nama induk" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 mb-4" />
+        <div class="flex justify-end space-x-3">
+            <button id="cancelAddInduk" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">Batal</button>
+            <button id="confirmAddInduk" class="px-4 py-2 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-md hover:from-green-700 hover:to-green-600 transition-all duration-200 shadow-md hover:shadow-lg">Tambah</button>
+        </div>
+    </div>
+</div>
+
 <script>
     // Initialize Lucide icons
     lucide.createIcons();
-    
+
     document.addEventListener('DOMContentLoaded', function() {
         // Refresh button
         const refreshBtn = document.getElementById('refreshBtn');
         refreshBtn.addEventListener('click', function() {
             const icon = this.querySelector('i');
             icon.classList.add('animate-spin');
-            
+
             // Simulate refresh (in a real app, this would reload data)
             setTimeout(() => {
                 icon.classList.remove('animate-spin');
                 showToast('Dashboard refreshed', 'success');
             }, 1000);
         });
-        
-        // Control buttons functionality
-        const toggleGenerate = document.getElementById('toggleGenerate');
-        const toggleLasik = document.getElementById('toggleLasik');
-        const toggleEklp = document.getElementById('toggleEklp');
-        const toggleDpt = document.getElementById('toggleDpt');
-        
-        // Check current status (you would fetch this from your API)
-        let generateRunning = false;
-        let lasikRunning = false;
-        let eklpRunning = false;
-        let dptRunning = false;
-        
+
+        // Generate All Modal
+        const openGenerateAllModal = document.getElementById('openGenerateAllModal');
+        const generateAllModal = document.getElementById('generateAllModal');
+        const closeGenerateAllModal = document.getElementById('closeGenerateAllModal');
+        const cancelGenerateAll = document.getElementById('cancelGenerateAll');
+        const confirmGenerateAll = document.getElementById('confirmGenerateAll');
+        // 打开弹窗
+        openGenerateAllModal.addEventListener('click', () => {
+            generateAllModal.classList.remove('hidden');
+            setTimeout(() => {
+                generateAllModal.querySelector('div').classList.remove('opacity-0', 'scale-95');
+                generateAllModal.querySelector('div').classList.add('opacity-100', 'scale-100');
+            }, 10);
+        });
+        // 关闭弹窗
+        function closeGenModal() {
+            generateAllModal.querySelector('div').classList.remove('opacity-100', 'scale-100');
+            generateAllModal.querySelector('div').classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                generateAllModal.classList.add('hidden');
+            }, 200);
+        }
+        closeGenerateAllModal.addEventListener('click', closeGenModal);
+        cancelGenerateAll.addEventListener('click', closeGenModal);
+        generateAllModal.addEventListener('click', (e) => {
+            if (e.target === generateAllModal) closeGenModal();
+        });
+        // 确认生成
+        confirmGenerateAll.addEventListener('click', () => {
+            const selectedMode = document.querySelector('input[name="generateMode"]:checked').value;
+            confirmGenerateAll.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i> Sedang menghasilkan...';
+            confirmGenerateAll.disabled = true;
+            lucide.createIcons();
+            fetch('http://localhost:3000/generate-all', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        mode: selectedMode
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    showToast(data.message || 'Tugas generate massal telah dikirim', 'success');
+                    closeGenModal();
+                })
+                .catch(err => {
+                    showToast('Gagal melakukan generate massal', 'error');
+                })
+                .finally(() => {
+                    confirmGenerateAll.innerHTML = 'Mulai Generate';
+                    confirmGenerateAll.disabled = false;
+                    lucide.createIcons();
+                });
+        });
+
         // Export modal
         const exportBtn = document.getElementById('exportBtn');
         const exportModal = document.getElementById('exportModal');
         const closeExportModal = document.getElementById('closeExportModal');
         const cancelExport = document.getElementById('cancelExport');
         const confirmExport = document.getElementById('confirmExport');
-        
+
         // Open modal with animation
         const openModal = () => {
             exportModal.classList.remove('hidden');
@@ -350,7 +454,7 @@ $stats = $stmt->fetch();
                 exportModal.querySelector('div').classList.add('opacity-100', 'scale-100');
             }, 10);
         };
-        
+
         // Close modal with animation
         const closeModal = () => {
             exportModal.querySelector('div').classList.remove('opacity-100', 'scale-100');
@@ -359,123 +463,63 @@ $stats = $stmt->fetch();
                 exportModal.classList.add('hidden');
             }, 200);
         };
-        
+
         exportBtn.addEventListener('click', openModal);
         closeExportModal.addEventListener('click', closeModal);
         cancelExport.addEventListener('click', closeModal);
-        
+
         // Close modal when clicking outside
         exportModal.addEventListener('click', (e) => {
             if (e.target === exportModal) {
                 closeModal();
             }
         });
-        
+
         confirmExport.addEventListener('click', () => {
             const selectedOption = document.querySelector('input[name="exportOption"]:checked').value;
-            
+
             // Show loading state
             confirmExport.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i> Exporting...';
             confirmExport.disabled = true;
             lucide.createIcons();
-            
-            fetch('api/export.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ export_option: selectedOption })
-            })
-            .then(response => response.json())
-            .then(data => {
-                showToast(data.message || 'Export completed successfully', 'success');
-                closeModal();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showToast('An error occurred during export', 'error');
-            })
-            .finally(() => {
-                confirmExport.innerHTML = 'Export';
-                confirmExport.disabled = false;
-                lucide.createIcons();
-            });
-        });
-        
-        // Toggle buttons
-        toggleGenerate.addEventListener('click', () => {
-            generateRunning = !generateRunning;
-            updateButtonState(toggleGenerate, 'generateText', generateRunning, 'Generate', 'from-blue-600 to-blue-500', 'from-red-600 to-red-500');
-            callApi('api/generate.php', { action: generateRunning ? 'start' : 'stop' });
-        });
-        
-        toggleLasik.addEventListener('click', () => {
-            lasikRunning = !lasikRunning;
-            updateButtonState(toggleLasik, 'lasikText', lasikRunning, 'LASIK', 'from-green-600 to-green-500', 'from-red-600 to-red-500');
-            callApi('api/lasik.php', { action: lasikRunning ? 'start' : 'stop', type: 'all' });
-        });
-        
-        toggleEklp.addEventListener('click', () => {
-            eklpRunning = !eklpRunning;
-            updateButtonState(toggleEklp, 'eklpText', eklpRunning, 'EKLP', 'from-purple-600 to-purple-500', 'from-red-600 to-red-500');
-            callApi('api/eklp.php', { action: eklpRunning ? 'start' : 'stop', type: 'all' });
-        });
-        
-        toggleDpt.addEventListener('click', () => {
-            dptRunning = !dptRunning;
-            updateButtonState(toggleDpt, 'dptText', dptRunning, 'DPT', 'from-yellow-600 to-yellow-500', 'from-red-600 to-red-500');
-            callApi('api/dpt.php', { action: dptRunning ? 'start' : 'stop', type: 'all' });
+
+            fetch('<?= $url_api ?>export-all', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        mode: selectedOption
+                    })
+                })
+                .then(async res => {
+                    if (!res.ok) throw new Error('Export gagal');
+                    const blob = await res.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `export_all_${selectedOption}.xlsx`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    showToast('Export berhasil', 'success');
+                    closeExportModal();
+                })
+                .catch(err => {
+                    showToast('Export gagal', 'error');
+                })
+                .finally(() => {
+                    confirmExportAll.innerHTML = 'Ekspor';
+                    confirmExportAll.disabled = false;
+                    lucide.createIcons();
+                });
         });
 
-        function callApi(url, body) {
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(body)
-            })
-            .then(response => response.json())
-            .then(data => {
-                showToast(data.message || data.msg, 'success');
-                // Refresh the page after 2 seconds if action was successful
-                if (data.success) {
-                    setTimeout(() => location.reload(), 2000);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showToast('An error occurred', 'error');
-            });
-        }
-        
-        function updateButtonState(button, textId, isRunning, name, startGradient, stopGradient) {
-            const textElement = document.getElementById(textId);
-            const icon = button.querySelector('i');
-            
-            // Remove all gradient classes
-            button.className = button.className.replace(/from-\w+-\d+ to-\w+-\d+/g, '');
-            
-            if (isRunning) {
-                // Add stop gradient
-                button.classList.add(...stopGradient.split(' '));
-                textElement.textContent = `Stop ${name}`;
-                if (icon) {
-                    icon.setAttribute('data-lucide', 'pause');
-                }
-            } else {
-                // Add start gradient
-                button.classList.add(...startGradient.split(' '));
-                textElement.textContent = `Start ${name}`;
-                if (icon) {
-                    icon.setAttribute('data-lucide', 'play');
-                }
-            }
-            
-            // Refresh the icon
-            lucide.createIcons();
-        }
-        
+        // Toggle buttons
+        // The original toggleGenerate, toggleLasik, toggleEklp, toggleDpt are removed.
+        // The new Generate All modal handles the batch generation.
+
         // Toast notification function
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
@@ -485,27 +529,181 @@ $stats = $stmt->fetch();
                 info: 'bg-blue-500',
                 warning: 'bg-yellow-500'
             };
-            
+
             toast.className = `fixed bottom-4 right-4 px-4 py-2 rounded-md shadow-lg text-white ${colors[type]} flex items-center transform transition-all duration-300 translate-y-2 opacity-0`;
             toast.innerHTML = `
                 <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info'}" class="w-5 h-5 mr-2"></i>
                 <span>${message}</span>
             `;
-            
+
             document.body.appendChild(toast);
             lucide.createIcons();
-            
+
             setTimeout(() => {
                 toast.classList.remove('translate-y-2', 'opacity-0');
                 toast.classList.add('translate-y-0', 'opacity-100');
             }, 10);
-            
+
             setTimeout(() => {
                 toast.classList.remove('translate-y-0', 'opacity-100');
                 toast.classList.add('translate-y-2', 'opacity-0');
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
+
+        // Induk Table Logic
+        const indukTableBody = document.getElementById('indukTableBody');
+        const indukCards = document.getElementById('indukCards');
+        const indukPagination = document.getElementById('indukPagination');
+        const searchInduk = document.getElementById('searchInduk');
+        let indukData = [];
+        let indukPage = 1;
+        let indukPageSize = 5;
+        let indukSearch = '';
+
+        function fetchInduk() {
+            fetch(`/admin_panel/api/induk.php?page=${indukPage}&size=${indukPageSize}&search=${encodeURIComponent(indukSearch)}`)
+                .then(res => res.json())
+                .then(data => {
+                    indukData = data.data;
+                    renderIndukTable();
+                    renderIndukCards();
+                    renderIndukPagination(data.total, data.page, data.size);
+                });
+        }
+
+        function renderIndukTable() {
+            if (!indukTableBody) return;
+            indukTableBody.innerHTML = '';
+            indukData.forEach(row => {
+                indukTableBody.innerHTML += `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">${row.id}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">${row.induk}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            ${row.is_selected 
+                                ? '<span class="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded-full">Ya</span>' 
+                                : '<span class="inline-block px-2 py-1 text-xs font-semibold bg-gray-200 text-gray-500 rounded-full">Tidak</span>'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">${row.created_at}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            ${row.is_selected 
+                                ? '' 
+                                : `<button class="setSelectedBtn px-3 py-1 bg-blue-500 text-white rounded mr-2" data-id="${row.id}">Set Selected</button>`
+                            }
+                        </td>
+                    </tr>
+                `;
+            });
+            document.querySelectorAll('.setSelectedBtn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    fetch('/admin_panel/api/induk.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            action: 'set_selected',
+                            id
+                        })
+                    }).then(res => res.json()).then(() => fetchInduk());
+                });
+            });
+        }
+
+        function renderIndukCards() {
+            if (!indukCards) return;
+            indukCards.innerHTML = '';
+            indukData.forEach(row => {
+                indukCards.innerHTML += `
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-2">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-gray-900 dark:text-white">${row.induk}</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">ID: ${row.id}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">${row.created_at}</p>
+                                <p class="text-xs ${row.is_selected ? 'text-green-600' : 'text-gray-400'}">${row.is_selected ? 'Selected' : 'Not selected'}</p>
+                            </div>
+                            <button class="setSelectedBtn px-3 py-1 bg-blue-500 text-white rounded" data-id="${row.id}" ${row.is_selected ? 'disabled' : ''}>Set Selected</button>
+                        </div>
+                    </div>
+                `;
+            });
+            document.querySelectorAll('.setSelectedBtn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    fetch('/admin_panel/api/induk.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            action: 'set_selected',
+                            id
+                        })
+                    }).then(res => res.json()).then(() => fetchInduk());
+                });
+            });
+        }
+
+        function renderIndukPagination(total, page, size) {
+            if (!indukPagination) return;
+            const totalPages = Math.ceil(total / size);
+            let html = '';
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="mx-1 px-3 py-1 rounded ${i === page ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200'}" onclick="indukGoToPage(${i})">${i}</button>`;
+            }
+            indukPagination.innerHTML = html;
+        }
+
+        function indukGoToPage(page) {
+            indukPage = page;
+            fetchInduk();
+        }
+        window.indukGoToPage = indukGoToPage;
+        searchInduk.addEventListener('input', function() {
+            indukSearch = this.value;
+            indukPage = 1;
+            fetchInduk();
+        });
+        // Modal logic
+        const addIndukBtn = document.getElementById('addIndukBtn');
+        const addIndukModal = document.getElementById('addIndukModal');
+        const cancelAddInduk = document.getElementById('cancelAddInduk');
+        const confirmAddInduk = document.getElementById('confirmAddInduk');
+        const newIndukInput = document.getElementById('newIndukInput');
+        addIndukBtn.addEventListener('click', () => {
+            addIndukModal.classList.remove('hidden');
+        });
+        cancelAddInduk.addEventListener('click', () => {
+            addIndukModal.classList.add('hidden');
+            newIndukInput.value = '';
+        });
+        confirmAddInduk.addEventListener('click', () => {
+            const induk = newIndukInput.value.trim();
+            if (!induk) return showToast('Nama induk wajib diisi', 'error');
+            fetch('/admin_panel/api/induk.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: 'add',
+                    induk
+                })
+            }).then(res => res.json()).then(() => {
+                addIndukModal.classList.add('hidden');
+                newIndukInput.value = '';
+                fetchInduk();
+            });
+        });
+        // 初始化加载
+        fetchInduk();
+
+        document.getElementById('uploadFileBtn').addEventListener('click', function() {
+            window.location.href = 'parents_file.php';
+        });
     });
 </script>
 

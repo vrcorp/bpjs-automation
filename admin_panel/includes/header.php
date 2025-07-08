@@ -1,6 +1,7 @@
 <?php
 require_once 'auth.php';
 requireAuth(); // 确保用户已登录
+$url_api = "http://localhost:3000/";
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">

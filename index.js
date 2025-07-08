@@ -5,12 +5,22 @@ import {runParentById} from "./function/resumeParent_sipp.js";
 import {scrapeDpt} from "./function/dptScrape.js";
 import {scrapeLasik} from "./function/lasikScrape.js";
 import {scrapeEklp} from "./function/eklpScraper.js";
+import { generateAll } from "./function/generateAll.js";
 import bodyParser from "body-parser";
+import ExcelJS from 'exceljs';
+import db from './database/db.js';
+import cors from 'cors';
 
 const app = express();
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({
+  origin: 'http://localhost',          // front-end dev server
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
+  credentials: true                    // kalau butuh cookie / auth header
+}));
 
 /* ───── SIPP Routes ───── */
 app.post("/generate", async (req, res) => {
@@ -113,6 +123,73 @@ app.post('/eklp-scrape/stop', async (req, res) => {
   const { type = "child" } = req.body;
   await scrapeEklp({ action: 'stop', type });
   res.json({ status: 'OK', msg: `EKLP ${type} scraping stopped` });
+});
+
+app.post("/generate-all", async (req, res) => {
+  const mode = req.body.mode ?? "sipp_lasik_dpt";
+  const parentId = req.body.parentId ?? null;
+  const is_file = req.body.is_file ?? false;
+  try {
+    generateAll({ mode, parentId, is_file })
+      .then(() => console.log("✅ generateAll selesai"))
+      .catch((err) => console.error("❌ generateAll error:", err));
+    res.status(202).json({ status: "OK", message: "Job generate-all diterima & diproses" });
+  } catch (e) {
+    res.status(500).json({ status: "ERROR", message: e.message });
+  }
+});
+
+app.post('/export-all', async (req, res) => {
+  const mode = req.body.mode || 'sipp_lasik_dpt';
+  const parentId = req.body.parentId || null;
+  const is_file = req.body.is_file ?? false;
+  let columns = [
+    { header: 'NIK', key: 'nik' },
+    { header: 'KPJ', key: 'kpj' },
+    { header: 'Nama', key: 'nama' },
+    { header: 'Kota', key: 'kota' },
+    { header: 'Kecamatan', key: 'kecamatan' },
+    { header: 'Kelurahan', key: 'kelurahan' }
+  ];
+  if (mode === 'sipp_lasik_dpt') columns.push({ header: 'Lasik', key: 'notif_lasik' });
+  if (mode === 'sipp_eklp_dpt') columns.push({ header: 'EKLP', key: 'notif_eklp' });
+
+  // 查询 result 表，筛选 kpj 和 nama 不为空
+  // 如果 parentId 不为 null，则加上 parent_id 的筛选条件
+  // 根据 is_file 参数，筛选 parent 的 is_file 字段
+  let query = `
+    SELECT r.nik, r.kpj, r.nama, r.kota, r.kecamatan, r.kelurahan, r.notif_lasik, r.notif_eklp
+    FROM result r
+    JOIN parents p ON r.parent_id = p.id
+    WHERE r.kpj IS NOT NULL AND r.kpj != '' AND r.nama IS NOT NULL AND r.nama != ''
+      AND p.is_file = ?
+  `;
+  let params = [is_file ? 1 : 0];
+  if (parentId !== null) {
+    query += ' AND r.parent_id = ?';
+    params.push(parentId);
+  }
+  const [rows] = await db.query(query, params);
+
+  // 生成 Excel
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet('Export');
+  // 第一行：MODE
+  sheet.addRow([`MODE: ${mode.replace(/_/g, ' → ').toUpperCase()}`]);
+  // 空一行
+  sheet.addRow([]);
+  // 表头
+  sheet.addRow(columns.map(col => col.header));
+  // 数据
+  rows.forEach(row => {
+    const data = columns.map(col => row[col.key] || 'N/A');
+    sheet.addRow(data);
+  });
+  // 设置响应头
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.setHeader('Content-Disposition', `attachment; filename=export_all_${mode}.xlsx`);
+  await workbook.xlsx.write(res);
+  res.end();
 });
 
 app.listen(3000, () => {

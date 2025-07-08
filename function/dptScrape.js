@@ -4,6 +4,8 @@ import { updateDPT, checkDPTStatus } from '../database/function.js';
 import db from "../database/db.js";
 dotenv.config();
 import { openTab, closeTab } from "../browser/browserManager.js";
+import {sendTelegramNotif} from "../function/telegram-notif.js";
+
 
 const URL_DPT = process.env.DPT_URL;
 
@@ -37,11 +39,56 @@ export async function getPendingDptChildren() {
 }
 
 // Scraping Functions
-async function scrapeSingleDpt(page, nik, parentId, attempt = 1) {
+async function scrapeSingleDpt(page, nik, parentId, attempt = 1 , mode) {
     const checkStatus = await checkDPTStatus(nik, parentId);
     
     if(checkStatus === "success"){
         console.log(`✅ DPT data already complete for NIK: ${nik}`);
+        const [rows] = await db.query(`
+            SELECT r.nik, r.kpj, r.nama,
+                   r.kota, r.kecamatan, r.kelurahan,      -- <─ tambahkan
+                   r.notif_lasik, r.notif_eklp            -- <─ tambahkan
+            FROM result r
+            JOIN parents p ON r.parent_id = p.id
+            WHERE r.nik = ? AND r.parent_id = ?
+          `, [nik, parentId]);
+          
+          const latestDptData = rows[0];      // objek baris pertama
+          if (!latestDptData) {
+            console.error('❌ Data DPT tidak ditemukan');
+            return { status: 'not_found', nik };
+          }
+          
+        
+        if (latestDptData) {
+            let pesan = `
+            <b>🔔 Notifikasi Pembaruan Data DPT</b>
+
+            <b>Mode:</b> ${mode || 'N/A'}
+            <b>NIK:</b> ${latestDptData.nik || 'N/A'}
+            <b>KPJ:</b> ${latestDptData.kpj || 'N/A'}
+            <b>Nama:</b> ${latestDptData.nama || 'N/A'}
+            <b>Kota:</b> ${latestDptData.kota || 'N/A'}
+            <b>Kecamatan:</b> ${latestDptData.kecamatan || 'N/A'}
+            <b>Kelurahan:</b> ${latestDptData.kelurahan || 'N/A'}
+            `;
+
+            if (mode === 'sipp_lasik_dpt') {
+            pesan += `<b>Lasik:</b> ${latestDptData.notif_lasik || 'N/A'}\n`;
+            } else if (mode === 'sipp_eklp_dpt') {
+            pesan += `<b>EKLP:</b> ${latestDptData.notif_eklp || 'N/A'}\n`;
+            }
+
+            pesan = pesan.trim();
+
+            
+            try {
+                await sendTelegramNotif(process.env.TARGET_USER_ID, pesan);
+                console.log(`📱 Telegram通知已发送 - NIK: ${nik}`);
+            } catch (telegramError) {
+                console.error(`❌ Telegram通知发送失败:`, telegramError.message);
+            }
+        }
         return { status: "already_complete", nik };
     }
 
@@ -66,9 +113,23 @@ async function scrapeSingleDpt(page, nik, parentId, attempt = 1) {
         await firstTextInput.click({ clickCount: 3 });
         await firstTextInput.type(nik || "", { delay: 50 });
 
-        const searchButton = await page.$x("//button[span[contains(text(),'Pencarian')]]");
-        if (searchButton.length === 0) throw new Error("Search button not found");
-        await searchButton[0].click();
+        await page.waitForSelector('div.wizard-buttons button'); // kontainer tombol
+
+        const clicked = await page.evaluate(() => {
+        const btns = [...document.querySelectorAll('div.wizard-buttons button')];
+        const target = btns.find(b =>
+            b.textContent.trim().includes('Pencarian')
+        );
+        if (target) {
+            target.click();
+            return true;
+        }
+        return false;
+        });
+
+        if (!clicked) throw new Error('Tombol Pencarian nggak ketemu');
+
+
 
         await page.waitForFunction(
             () => {
@@ -98,13 +159,60 @@ async function scrapeSingleDpt(page, nik, parentId, attempt = 1) {
         result.dpt_status = 'success';
         
         await updateDPT(result, parentId);
+        // 获取最新的DPT数据并发送Telegram通知
+        const [rows] = await db.query(`
+            SELECT r.nik, r.kpj, r.nama,
+                   r.kota, r.kecamatan, r.kelurahan,      -- <─ tambahkan
+                   r.notif_lasik, r.notif_eklp            -- <─ tambahkan
+            FROM result r
+            JOIN parents p ON r.parent_id = p.id
+            WHERE r.nik = ? AND r.parent_id = ?
+          `, [nik, parentId]);
+          
+          const latestDptData = rows[0];      // objek baris pertama
+          if (!latestDptData) {
+            console.error('❌ Data DPT tidak ditemukan');
+            return { status: 'not_found', nik };
+          }
+          
+        
+        if (latestDptData) {
+            let pesan = `
+            <b>🔔 Notifikasi Pembaruan Data DPT</b>
+
+            <b>Mode:</b> ${mode || 'N/A'}
+            <b>NIK:</b> ${latestDptData.nik || 'N/A'}
+            <b>KPJ:</b> ${latestDptData.kpj || 'N/A'}
+            <b>Nama:</b> ${latestDptData.nama || 'N/A'}
+            <b>Kota:</b> ${latestDptData.kota || 'N/A'}
+            <b>Kecamatan:</b> ${latestDptData.kecamatan || 'N/A'}
+            <b>Kelurahan:</b> ${latestDptData.kelurahan || 'N/A'}
+            `;
+
+            if (mode === 'sipp_lasik_dpt') {
+            pesan += `<b>Lasik:</b> ${latestDptData.notif_lasik || 'N/A'}\n`;
+            } else if (mode === 'sipp_eklp_dpt') {
+            pesan += `<b>EKLP:</b> ${latestDptData.notif_eklp || 'N/A'}\n`;
+            }
+
+            pesan = pesan.trim();
+
+            
+            try {
+                await sendTelegramNotif(process.env.TARGET_USER_ID, pesan);
+                console.log(`📱 Telegram通知已发送 - NIK: ${nik}`);
+            } catch (telegramError) {
+                console.error(`❌ Telegram通知发送失败:`, telegramError.message);
+            }
+        }
         return { 
             status: "success",
             data: result 
         };
         
     } catch (error) {
-        result.dpt_status = attempt >= 3 ? 'failed' : 'error';
+        if (attempt >= 3) throw error;
+        result.dpt_status = 'error';
         await updateDPT(result, parentId);
         
         console.error(`❌ Error scraping DPT for NIK ${nik}:`, error.message);
@@ -125,7 +233,7 @@ async function scrapeSingleDpt(page, nik, parentId, attempt = 1) {
     }
 }
 
-export async function scrapeDpt({ data, action = 'start', type = "all" }) {
+export async function scrapeDpt({ data, action = 'start', type = "all", mode }) {
     let jobId;
     let childId = data?.childId;
     let parentId = data?.parentId;
@@ -164,7 +272,7 @@ export async function scrapeDpt({ data, action = 'start', type = "all" }) {
             if (!child) throw new Error(`Child with ID ${childId} not found`);
             
             console.log(`🔍 Processing DPT for child ${childId} (NIK: ${child.nik})`);
-            const result = await scrapeSingleDpt(page, child.nik, child.parent_id);
+            const result = await scrapeSingleDpt(page, child.nik, child.parent_id,null,mode);
             results.push(result);
         } 
         else if (type === "parent") {

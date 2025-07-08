@@ -274,3 +274,61 @@ export async function checkEklpStatus(kpj) {
   }
 }
 
+export async function getSelectedInduk() {
+  // 查询 induk 表，获取 is_selected = 1 的记录
+  const query = `
+    SELECT * FROM induk WHERE is_selected = 1 LIMIT 1
+  `;
+  const [rows] = await db.execute(query);
+  if (rows.length > 0) {
+    return rows[0];
+  } else {
+    return '1101743';
+  }
+}
+
+
+export async function getParentById(parentId,is_file = false) {
+  // 查询 parents 表，返回指定 id 的 parent 记录
+  let query, params;
+  if (is_file) {
+    query = `
+      SELECT * FROM parents WHERE id = ? AND is_file = TRUE
+    `;
+    params = [parentId];
+  } else {
+    query = `
+      SELECT * FROM parents WHERE id = ?
+    `;
+    params = [parentId];
+  }
+  const [rows] = await db.execute(query, params);
+  if (rows.length > 0) {
+    return rows[0];
+  } else {
+    return null;
+  }
+}
+
+export async function getAllFileParents() {
+  // 查询 parents 表，返回所有 is_file = TRUE 的记录
+  const query = `
+    SELECT * FROM parents WHERE is_file = TRUE
+  `;
+  const [rows] = await db.execute(query);
+  return rows;
+}
+
+
+export async function getChildrenByParentId(parentId) {
+  // 查询 result 表，返回指定 parent_id 的所有子项
+  const query = `
+    SELECT * FROM result WHERE parent_id = ?
+  `;
+  const [rows] = await db.execute(query, [parentId]);
+  return rows;
+}
+
+
+
+

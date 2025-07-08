@@ -44,14 +44,10 @@ export async function loginEklp(page, attempt = 1) {
         await safeGoto(page, EKLP_LOGIN_URL);
         
         // Check if already logged in
-        const currentUrl = page.url();
-        if (!currentUrl.includes("login")) {
-            console.log("✅ Already logged in to EKLP");
-            return true;
-        }
+        if (page.url().includes('/dashboard.bpjs')) return true;
 
         // Solve captcha
-        const captchaText = await solveCaptchaByScreenshot(page);
+        const captchaText = await solveCaptchaByScreenshot(page, "eklp");
         if (!captchaText) {
             throw new Error("Failed to solve captcha");
         }
@@ -68,11 +64,10 @@ export async function loginEklp(page, attempt = 1) {
                 .catch(() => console.log("Navigation timeout"))
         ]);
 
-        // Check if login successful
-        const loginError = await page.$('.error-message');
-        if (loginError) {
-            const errorText = await page.evaluate(el => el.textContent, loginError);
-            throw new Error(errorText);
+        await page.waitForNavigation({ timeout: 5000 }).catch(() => {});
+      
+        if (!page.url().includes('/dashboard.bpjs')) {
+            throw new Error('Gagal login (masih di halaman login, captcha mungkin salah)');
         }
 
         console.log("✅ EKLP Login successful");
@@ -105,24 +100,37 @@ async function scrapeSingleEklp(page, childData, attempt = 1) {
         await safeGoto(page, EKLP_INPUT_URL, { waitUntil: "networkidle2" });
         
         // Fill KPJ/NIK field (using KPJ if available, otherwise NIK)
-        const identifier = kpj || nik;
+        // 打印 childData 以便调试
+        console.log("EKLP 子对象信息:", childData);
+        const identifier = nik || kpj;
+        console.log('identiifer',identifier);
         await page.type('#kpj', identifier);
         
         // Set current date for accident date
-        const today = new Date();
-        const dd = String(today.getDate()).padStart(2, '0');
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const yyyy = today.getFullYear();
-        const todayStr = `${dd}-${mm}-${yyyy}`;
-        
+        // 日期格式：09-07-2025
+        // 使日期为印尼西部时间（WIB, UTC+7）
+        const nowUtc = new Date();
+        // 转换为WIB时区
+        const wibOffset = 7 * 60; // 分钟
+        const local = new Date(nowUtc.getTime() + (wibOffset - nowUtc.getTimezoneOffset()) * 60000);
+        const dd = String(local.getDate()).padStart(2, '0');
+        const mm = String(local.getMonth() + 1).padStart(2, '0');
+        const yyyy = local.getFullYear();
+        const todayStr = `${dd}-${mm}-${yyyy}`; // 例如：09-07-2025
+
         await page.$eval('#tgl', (el, date) => {
             el.value = date;
         }, todayStr);
         
         // Set current time for accident time (format: HH:MM)
-        const hours = String(today.getHours()).padStart(2, '0');
-        const minutes = String(today.getMinutes()).padStart(2, '0');
-        const timeStr = `${hours}:${minutes}`;
+        // 按照要求，时间格式为 23:21
+        // 修正：使用 local 变量（已定义为当前WIB时间）
+        // 将 WIB 时间减去 1 小时
+        let adjustedHour = local.getHours() - 1;
+        if (adjustedHour < 0) adjustedHour = 23; // 防止负数，回绕到23点
+        const hours = String(adjustedHour).padStart(2, '0');
+        const minutes = String(local.getMinutes()).padStart(2, '0');
+        const timeStr = `${hours}:${minutes}`; // 例如：22:21
         
         await page.type('#jamKecelakaan', timeStr);
         

@@ -146,6 +146,27 @@ export function getBrowserStatus() {
     browserPid: browser ? browser.process().pid : null
   };
 }
+/**
+ * Tutup semua tab yang masih terbuka.
+ * @param {boolean} alsoCloseBrowser - kalau true, sekalian matikan browser.
+ */
+export async function closeAllTabs(alsoCloseBrowser = false) {
+  if (pages.size === 0) {
+    console.log('♻️  Tidak ada tab yang perlu ditutup');
+  } else {
+    console.log(`🗑️  Closing ${pages.size} tab(s)…`);
+    for (const [jobId, page] of pages) {
+      try {
+        if (!page.isClosed()) await page.close();
+      } catch (err) {
+        console.error(`Error closing tab ${jobId}:`, err);
+      }
+    }
+    pages.clear();
+  }
+
+  if (alsoCloseBrowser) await closeBrowser();
+}
 
 // Cleanup saat proses berhenti
 process.on('exit', closeBrowser);

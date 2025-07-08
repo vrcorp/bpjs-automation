@@ -1,6 +1,8 @@
 CREATE TABLE parents (
   id INT AUTO_INCREMENT PRIMARY KEY,
   kpj VARCHAR(50),
+  is_file BOOLEAN DEFAULT FALSE,
+  file_path VARCHAR(255) DEFAULT NULL,
   status ENUM('error', 'pending', 'processing', 'success','not found'),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -39,6 +41,19 @@ CREATE TABLE result (
   FOREIGN KEY (parent_id) REFERENCES parents(id) ON DELETE SET NULL
 );
 
+CREATE TABLE running_jobs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  end_at TIMESTAMP NULL,
+  mode VARCHAR(50) NOT NULL,
+  parent_id INT NULL,
+  is_file BOOLEAN DEFAULT FALSE,
+  status ENUM('pending', 'process', 'finish','stopped','error') DEFAULT 'pending',
+  
+  FOREIGN KEY (parent_id) REFERENCES parents(id) ON DELETE SET NULL
+);
+
+
 
 -- Admin table
 CREATE TABLE admins (
@@ -51,3 +66,10 @@ CREATE TABLE admins (
 
 -- Insert default admin (password: admin123)
 INSERT INTO admins (username, password) VALUES ('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
+
+CREATE TABLE induk (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  induk VARCHAR(255) NOT NULL,
+  is_selected BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

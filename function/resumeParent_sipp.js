@@ -6,6 +6,7 @@ import {
   saveChild,
   updateStatusParent,
   checkChildStatus,
+  getSelectedInduk
 } from "../database/function.js";
 import db from "../database/db.js";
 import dotenv from "dotenv";

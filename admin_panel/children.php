@@ -76,7 +76,7 @@ $children = $stmt->fetchAll();
             </a>
             <div class="mt-2">
                 <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">Children Records</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400">KPJ: <?= htmlspecialchars($parent['kpj']) ?></p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">KPJ: <?= htmlspecialchars($parent['kpj'] ?? '') ?></p>
             </div>
         </div>
         <div class="w-full md:w-auto flex flex-col sm:flex-row gap-2">
@@ -102,109 +102,30 @@ $children = $stmt->fetchAll();
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">KPJ</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">NIK</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">SIPP</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nama</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">LASIK</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">EKLP</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">DPT</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kota</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kecamatan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kelurahan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Action</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     <?php foreach ($children as $child): ?>
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" 
-                        data-notif-sipp="<?= htmlspecialchars($child['notif_sipp'] ?? '') ?>"
-                        data-notif-lasik="<?= htmlspecialchars($child['notif_lasik'] ?? '') ?>"
-                        data-notif-eklp="<?= htmlspecialchars($child['notif_eklp'] ?? '') ?>"
-                        data-kota="<?= htmlspecialchars($child['kota'] ?? '') ?>"
-                        data-kecamatan="<?= htmlspecialchars($child['kecamatan'] ?? '') ?>"
-                        data-kelurahan="<?= htmlspecialchars($child['kelurahan'] ?? '') ?>">
-                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium"><?= htmlspecialchars($child['kpj']) ?></td>
-                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['nik']) ?></td>
-                        
-                        <!-- SIPP Status -->
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" data-id="<?= $child['id'] ?>">
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium"><?= htmlspecialchars($child['kpj'] ?? '') ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['nik'] ?? '') ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['nama'] ?? '') ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['notif_lasik'] ?? '') ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['notif_eklp'] ?? '') ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['kota'] ?? '') ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['kecamatan'] ?? '') ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['kelurahan'] ?? '') ?></td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    <?= empty($child['nik']) ? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' : 
-                                       ($child['sipp_status'] === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 
-                                       'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100') ?>">
-                                    <?= empty($child['nik']) ? 'not found' : ucfirst($child['sipp_status'] ?? 'pending') ?>
-                                </span>
-                            </div>
-                        </td>
-                        
-                        <!-- LASIK Status -->
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    <?= empty($child['nik']) ? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' : 
-                                       ($child['lasik_status'] === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 
-                                       'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100') ?>">
-                                    <?= empty($child['nik']) ? 'not found' : ucfirst($child['lasik_status'] ?? 'pending') ?>
-                                </span>
-                            </div>
-                        </td>
-                        
-                        <!-- EKLP Status -->
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    <?= empty($child['nik']) ? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' : 
-                                       ($child['eklp_status'] === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 
-                                       'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100') ?>">
-                                    <?= empty($child['nik']) ? 'not found' : ucfirst($child['eklp_status'] ?? 'pending') ?>
-                                </span>
-                            </div>
-                        </td>
-                        
-                        <!-- DPT Status -->
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    <?= empty($child['nik']) ? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' : 
-                                       ($child['dpt_status'] === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 
-                                       'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100') ?>">
-                                    <?= empty($child['nik']) ? 'not found' : ucfirst($child['dpt_status'] ?? 'pending') ?>
-                                </span>
-                            </div>
-                        </td>
-                        
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex space-x-3">
-                                <?php if (empty($child['nik'])): ?>
-                                    <span class="text-gray-400 dark:text-gray-500 text-xs">No actions</span>
-                                <?php elseif (!in_array($child['notif_sipp'] ?? '', ['Sukses', 'Tidak bisa digunakan'])): ?>
-                                    <span class="text-gray-400 dark:text-gray-500 text-xs">No actions</span>
-                                <?php elseif ($child['sipp_status'] === 'not found'): ?>
-                                    <span class="text-gray-400 dark:text-gray-500 text-xs">No actions</span>
-                                <?php elseif ($child['sipp_status'] === 'success'): ?>
-                                    <?php if ($child['lasik_status'] !== 'success'): ?>
-                                        <a href="#" class="inline-flex items-center text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 transition-colors generate-lasik" data-id="<?= $child['id'] ?>">
-                                            <i data-lucide="zap" class="w-4 h-4 mr-1"></i> LASIK
-                                        </a>
-                                    <?php endif; ?>
-                                    <?php if ($child['eklp_status'] !== 'success'): ?>
-                                        <a href="#" class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300 transition-colors generate-eklp" data-id="<?= $child['id'] ?>">
-                                            <i data-lucide="zap" class="w-4 h-4 mr-1"></i> EKLP
-                                        </a>
-                                    <?php endif; ?>
-                                    <?php if ($child['dpt_status'] !== 'success'): ?>
-                                        <a href="#" class="inline-flex items-center text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors generate-dpt" data-id="<?= $child['id'] ?>">
-                                            <i data-lucide="zap" class="w-4 h-4 mr-1"></i> DPT
-                                        </a>
-                                    <?php endif; ?>
-                                    <a href="#" class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors view-details" data-id="<?= $child['id'] ?>">
-                                        <i data-lucide="eye" class="w-4 h-4 mr-1"></i> Details
-                                    </a>
-                                <?php else: ?>
-                                    <a href="#" class="inline-flex items-center text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors resume-child" data-id="<?= $child['id'] ?>">
-                                        <i data-lucide="play" class="w-4 h-4 mr-1"></i> Resume
-                                    </a>
-                                    <a href="#" class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors view-details" data-id="<?= $child['id'] ?>">
-                                        <i data-lucide="eye" class="w-4 h-4 mr-1"></i> Details
-                                    </a>
-                                <?php endif; ?>
-                            </div>
+                            <button class="copy-child-btn text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 transition-colors duration-200" data-id="<?= $child['id'] ?>">
+                                <i data-lucide="copy" class="w-4 h-4 inline mr-1"></i> Copy
+                            </button>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -215,103 +136,23 @@ $children = $stmt->fetchAll();
         <!-- Mobile Cards -->
         <div class="md:hidden grid grid-cols-1 gap-4 p-4">
             <?php foreach ($children as $child): ?>
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow"
-                data-notif-sipp="<?= htmlspecialchars($child['notif_sipp'] ?? '') ?>"
-                data-notif-lasik="<?= htmlspecialchars($child['notif_lasik'] ?? '') ?>"
-                data-notif-eklp="<?= htmlspecialchars($child['notif_eklp'] ?? '') ?>"
-                data-kota="<?= htmlspecialchars($child['kota'] ?? '') ?>"
-                data-kecamatan="<?= htmlspecialchars($child['kecamatan'] ?? '') ?>"
-                data-kelurahan="<?= htmlspecialchars($child['kelurahan'] ?? '') ?>">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow" data-id="<?= $child['id'] ?>">
                 <div class="flex justify-between items-start">
                     <div>
-                        <h3 class="font-medium text-gray-900 dark:text-white"><?= htmlspecialchars($child['kpj']) ?></h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">NIK: <?= htmlspecialchars($child['nik']) ?></p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-xs text-gray-400 dark:text-gray-500"><?= date('Y-m-d H:i', strtotime($child['created_at'])) ?></span>
-                    </div>
-                </div>
-                
-                <div class="mt-4 grid grid-cols-2 gap-3">
-                    <!-- SIPP Status -->
-                    <div>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">SIPP</p>
-                        <span class="px-2 py-1 text-xs font-semibold rounded-full 
-                            <?= empty($child['nik']) ? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' : 
-                               ($child['sipp_status'] === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 
-                               'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100') ?>">
-                            <?= empty($child['nik']) ? 'not found' : ucfirst($child['sipp_status'] ?? 'pending') ?>
-                        </span>
-                    </div>
-                    
-                    <!-- LASIK Status -->
-                    <div>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">LASIK</p>
-                        <span class="px-2 py-1 text-xs font-semibold rounded-full 
-                            <?= empty($child['nik']) ? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' : 
-                               ($child['lasik_status'] === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 
-                               'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100') ?>">
-                            <?= empty($child['nik']) ? 'not found' : ucfirst($child['lasik_status'] ?? 'pending') ?>
-                        </span>
-                    </div>
-                    
-                    <!-- EKLP Status -->
-                    <div>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">EKLP</p>
-                        <span class="px-2 py-1 text-xs font-semibold rounded-full 
-                            <?= empty($child['nik']) ? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' : 
-                               ($child['eklp_status'] === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 
-                               'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100') ?>">
-                            <?= empty($child['nik']) ? 'not found' : ucfirst($child['eklp_status'] ?? 'pending') ?>
-                        </span>
-                    </div>
-                    
-                    <!-- DPT Status -->
-                    <div>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">DPT</p>
-                        <span class="px-2 py-1 text-xs font-semibold rounded-full 
-                            <?= empty($child['nik']) ? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' : 
-                               ($child['dpt_status'] === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 
-                               'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100') ?>">
-                            <?= empty($child['nik']) ? 'not found' : ucfirst($child['dpt_status'] ?? 'pending') ?>
-                        </span>
+                        <h3 class="font-medium text-gray-900 dark:text-white">KPJ: <?= htmlspecialchars($child['kpj'] ?? '') ?></h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">NIK: <?= htmlspecialchars($child['nik'] ?? '') ?></p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Nama: <?= htmlspecialchars($child['nama'] ?? '') ?></p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">LASIK: <?= htmlspecialchars($child['notif_lasik'] ?? '') ?></p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">EKLP: <?= htmlspecialchars($child['notif_eklp'] ?? '') ?></p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kota: <?= htmlspecialchars($child['kota'] ?? '') ?></p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kecamatan: <?= htmlspecialchars($child['kecamatan'] ?? '') ?></p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kelurahan: <?= htmlspecialchars($child['kelurahan'] ?? '') ?></p>
                     </div>
                 </div>
-                
-                <div class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700 flex justify-between">
-                    <?php if (empty($child['nik'])): ?>
-                        <span class="text-gray-400 dark:text-gray-500 text-xs">No actions</span>
-                    <?php elseif (!in_array($child['notif_sipp'] ?? '', ['Sukses', 'Tidak bisa digunakan'])): ?>
-                        <span class="text-gray-400 dark:text-gray-500 text-xs">No actions</span>
-                    <?php elseif ($child['sipp_status'] === 'not found'): ?>
-                        <span class="text-gray-400 dark:text-gray-500 text-xs">No actions</span>
-                    <?php elseif ($child['sipp_status'] === 'success'): ?>
-                        <?php if ($child['lasik_status'] !== 'success'): ?>
-                            <a href="#" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 text-sm flex items-center generate-lasik" data-id="<?= $child['id'] ?>">
-                                <i data-lucide="zap" class="w-4 h-4 mr-1"></i> LASIK
-                            </a>
-                        <?php endif; ?>
-                        <?php if ($child['eklp_status'] !== 'success'): ?>
-                            <a href="#" class="text-orange-600 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300 text-sm flex items-center generate-eklp" data-id="<?= $child['id'] ?>">
-                                <i data-lucide="zap" class="w-4 h-4 mr-1"></i> EKLP
-                            </a>
-                        <?php endif; ?>
-                        <?php if ($child['dpt_status'] !== 'success'): ?>
-                            <a href="#" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 text-sm flex items-center generate-dpt" data-id="<?= $child['id'] ?>">
-                                <i data-lucide="zap" class="w-4 h-4 mr-1"></i> DPT
-                            </a>
-                        <?php endif; ?>
-                        <a href="#" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm flex items-center view-details" data-id="<?= $child['id'] ?>">
-                            <i data-lucide="eye" class="w-4 h-4 mr-1"></i> Details
-                        </a>
-                    <?php else: ?>
-                        <a href="#" class="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 text-sm flex items-center resume-child" data-id="<?= $child['id'] ?>">
-                            <i data-lucide="play" class="w-4 h-4 mr-1"></i> Resume
-                        </a>
-                        <a href="#" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm flex items-center view-details" data-id="<?= $child['id'] ?>">
-                            <i data-lucide="eye" class="w-4 h-4 mr-1"></i> Details
-                        </a>
-                    <?php endif; ?>
+                <div class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+                    <button class="copy-child-btn text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm flex items-center" data-id="<?= $child['id'] ?>">
+                        <i data-lucide="copy" class="w-4 h-4 mr-1"></i> Copy
+                    </button>
                 </div>
             </div>
             <?php endforeach; ?>
@@ -712,6 +553,30 @@ $children = $stmt->fetchAll();
                 element.textContent = value;
             }
         }
+
+        // 移除所有 action 相关事件，添加 copy 事件
+        function getChildCopyText(row) {
+            const kpj = row.querySelector('td:nth-child(1)')?.textContent.trim() || '-';
+            const nik = row.querySelector('td:nth-child(2)')?.textContent.trim() || '-';
+            const nama = row.querySelector('td:nth-child(3)')?.textContent.trim() || '-';
+            const lasik = row.querySelector('td:nth-child(4)')?.textContent.trim() || '-';
+            const eklp = row.querySelector('td:nth-child(5)')?.textContent.trim() || '-';
+            const kota = row.querySelector('td:nth-child(6)')?.textContent.trim() || '-';
+            const kecamatan = row.querySelector('td:nth-child(7)')?.textContent.trim() || '-';
+            const kelurahan = row.querySelector('td:nth-child(8)')?.textContent.trim() || '-';
+            return `KPJ: ${kpj}\nNIK: ${nik}\nNama: ${nama}\nLASIK: ${lasik}\nEKLP: ${eklp}\nKota: ${kota}\nKecamatan: ${kecamatan}\nKelurahan: ${kelurahan}`;
+        }
+        document.querySelectorAll('.copy-child-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                let row = this.closest('tr');
+                if (!row) row = this.closest('.bg-white');
+                const text = getChildCopyText(row);
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Berhasil disalin!');
+                });
+            });
+        });
     });
 </script>
 

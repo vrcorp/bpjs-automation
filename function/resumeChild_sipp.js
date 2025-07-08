@@ -2,7 +2,7 @@ import puppeteer from "puppeteer";
 import { login } from "../function/sipp_login.js";
 import { inputDataAndScrape } from "../function/sipp_scrape.js";
 import { safeGoto } from "../function/config.js";
-import { saveChild, updateStatusParent } from "../database/function.js";
+import { saveChild, updateStatusParent, getSelectedInduk } from "../database/function.js";
 import db from "../database/db.js";
 import dotenv from "dotenv";
 dotenv.config();
