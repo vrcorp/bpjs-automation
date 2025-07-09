@@ -45,7 +45,7 @@ async function scrapeSingleDpt(page, nik, parentId, attempt = 1 , mode) {
     if(checkStatus === "success"){
         console.log(`✅ DPT data already complete for NIK: ${nik}`);
         const [rows] = await db.query(`
-            SELECT r.nik, r.kpj, r.nama,
+            SELECT r.nik, r.kpj, r.nama, r.email, r.hp, r.ttl,
                    r.kota, r.kecamatan, r.kelurahan,      -- <─ tambahkan
                    r.notif_lasik, r.notif_eklp            -- <─ tambahkan
             FROM result r
@@ -68,6 +68,9 @@ async function scrapeSingleDpt(page, nik, parentId, attempt = 1 , mode) {
             <b>NIK:</b> ${latestDptData.nik || 'N/A'}
             <b>KPJ:</b> ${latestDptData.kpj || 'N/A'}
             <b>Nama:</b> ${latestDptData.nama || 'N/A'}
+            <b>Email:</b> ${latestDptData.email || 'N/A'}
+            <b>HP:</b> ${latestDptData.hp || 'N/A'}
+            <b>TTL:</b> ${latestDptData.ttl || 'N/A'}
             <b>Kota:</b> ${latestDptData.kota || 'N/A'}
             <b>Kecamatan:</b> ${latestDptData.kecamatan || 'N/A'}
             <b>Kelurahan:</b> ${latestDptData.kelurahan || 'N/A'}
@@ -161,7 +164,7 @@ async function scrapeSingleDpt(page, nik, parentId, attempt = 1 , mode) {
         await updateDPT(result, parentId);
         // 获取最新的DPT数据并发送Telegram通知
         const [rows] = await db.query(`
-            SELECT r.nik, r.kpj, r.nama,
+            SELECT r.nik, r.kpj, r.nama, r.email, r.ttl, r.hp,
                    r.kota, r.kecamatan, r.kelurahan,      -- <─ tambahkan
                    r.notif_lasik, r.notif_eklp            -- <─ tambahkan
             FROM result r
@@ -184,6 +187,9 @@ async function scrapeSingleDpt(page, nik, parentId, attempt = 1 , mode) {
             <b>NIK:</b> ${latestDptData.nik || 'N/A'}
             <b>KPJ:</b> ${latestDptData.kpj || 'N/A'}
             <b>Nama:</b> ${latestDptData.nama || 'N/A'}
+            <b>Email:</b> ${latestDptData.email || 'N/A'}
+            <b>HP:</b> ${latestDptData.hp || 'N/A'}
+            <b>TTL:</b> ${latestDptData.ttl || 'N/A'}
             <b>Kota:</b> ${latestDptData.kota || 'N/A'}
             <b>Kecamatan:</b> ${latestDptData.kecamatan || 'N/A'}
             <b>Kelurahan:</b> ${latestDptData.kelurahan || 'N/A'}
@@ -211,18 +217,18 @@ async function scrapeSingleDpt(page, nik, parentId, attempt = 1 , mode) {
         };
         
     } catch (error) {
-        if (attempt >= 3) throw error;
+        // if (attempt >= 3) throw error;
         result.dpt_status = 'error';
         await updateDPT(result, parentId);
         
         console.error(`❌ Error scraping DPT for NIK ${nik}:`, error.message);
         
         // Retry logic (max 3 attempts)
-        if (attempt < 3) {
-            console.log(`🔄 Retrying (attempt ${attempt + 1})`);
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            return scrapeSingleDpt(page, nik, parentId, attempt + 1);
-        }
+        // if (attempt < 3) {
+        //     console.log(`🔄 Retrying (attempt ${attempt + 1})`);
+        //     await new Promise(resolve => setTimeout(resolve, 2000));
+        //     return scrapeSingleDpt(page, nik, parentId, attempt + 1);
+        // }
         
         return { 
             status: "error",

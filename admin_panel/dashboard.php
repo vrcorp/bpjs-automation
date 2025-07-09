@@ -53,7 +53,13 @@ $stats = $stmt->fetch();
                 <div>
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Completed SIPP</p>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white"><?= $stats['completed_sipp'] ?></h3>
-                    <p class="text-xs text-gray-400 mt-1"><?= round(($stats['completed_sipp'] / $stats['total_parents']) * 100, 1) ?>% success</p>
+                    <p class="text-xs text-gray-400 mt-1">
+                        <?php if ($stats['total_parents'] > 0): ?>
+                            <?= round(($stats['completed_sipp'] / $stats['total_parents']) * 100, 1) ?>% berhasil
+                        <?php else: ?>
+                            Tidak ada data
+                        <?php endif; ?>
+                    </p>
                 </div>
                 <div class="w-12 h-12 rounded-lg bg-green-50 dark:bg-green-900/30 flex items-center justify-center group-hover:bg-green-100 dark:group-hover:bg-green-900/50 transition-colors">
                     <i data-lucide="check-circle" class="w-6 h-6 text-green-600 dark:text-green-400"></i>
@@ -61,7 +67,11 @@ $stats = $stmt->fetch();
             </div>
             <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
                 <div class="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div class="h-full bg-green-500 rounded-full" style="width: <?= $stats['total_parents'] ? ($stats['completed_sipp'] / $stats['total_parents']) * 100 : 0 ?>%"></div>
+                    <?php if ($stats['total_parents'] > 0): ?>
+                        <div class="h-full bg-green-500 rounded-full" style="width: <?= ($stats['completed_sipp'] / $stats['total_parents']) * 100 ?>%"></div>
+                    <?php else: ?>
+                        <div class="h-full bg-green-500 rounded-full" style="width: 0%"></div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -72,7 +82,13 @@ $stats = $stmt->fetch();
                 <div>
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Completed LASIK</p>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white"><?= $stats['completed_lasik'] ?></h3>
-                    <p class="text-xs text-gray-400 mt-1"><?= round(($stats['completed_lasik'] / $stats['total_parents']) * 100, 1) ?>% success</p>
+                    <p class="text-xs text-gray-400 mt-1">
+                        <?php if ($stats['total_parents'] > 0): ?>
+                            <?= round(($stats['completed_lasik'] / $stats['total_parents']) * 100, 1) ?>% berhasil
+                        <?php else: ?>
+                            Tidak ada data
+                        <?php endif; ?>
+                    </p>
                 </div>
                 <div class="w-12 h-12 rounded-lg bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center group-hover:bg-purple-100 dark:group-hover:bg-purple-900/50 transition-colors">
                     <i data-lucide="eye" class="w-6 h-6 text-purple-600 dark:text-purple-400"></i>
@@ -80,7 +96,11 @@ $stats = $stmt->fetch();
             </div>
             <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
                 <div class="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div class="h-full bg-purple-500 rounded-full" style="width: <?= $stats['total_parents'] ? ($stats['completed_lasik'] / $stats['total_parents']) * 100 : 0 ?>%"></div>
+                    <?php if ($stats['total_parents'] > 0): ?>
+                        <div class="h-full bg-purple-500 rounded-full" style="width: <?= ($stats['completed_lasik'] / $stats['total_parents']) * 100 ?>%"></div>
+                    <?php else: ?>
+                        <div class="h-full bg-purple-500 rounded-full" style="width: 0%"></div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -91,7 +111,13 @@ $stats = $stmt->fetch();
                 <div>
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Completed EKLP</p>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white"><?= $stats['completed_eklp'] ?></h3>
-                    <p class="text-xs text-gray-400 mt-1"><?= round(($stats['completed_eklp'] / $stats['total_parents']) * 100, 1) ?>% success</p>
+                    <p class="text-xs text-gray-400 mt-1">
+                        <?php if ($stats['total_parents'] > 0): ?>
+                            <?= round(($stats['completed_eklp'] / $stats['total_parents']) * 100, 1) ?>% success
+                        <?php else: ?>
+                            Tidak ada data
+                        <?php endif; ?>
+                    </p>
                 </div>
                 <div class="w-12 h-12 rounded-lg bg-orange-50 dark:bg-orange-900/30 flex items-center justify-center group-hover:bg-orange-100 dark:group-hover:bg-orange-900/50 transition-colors">
                     <i data-lucide="book-open" class="w-6 h-6 text-orange-600 dark:text-orange-400"></i>
@@ -99,7 +125,7 @@ $stats = $stmt->fetch();
             </div>
             <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
                 <div class="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div class="h-full bg-orange-500 rounded-full" style="width: <?= $stats['total_parents'] ? ($stats['completed_eklp'] / $stats['total_parents']) * 100 : 0 ?>%"></div>
+                    <div class="h-full bg-orange-500 rounded-full" style="width: <?= ($stats['total_parents'] && $stats['total_parents'] != 0) ? ($stats['completed_eklp'] / $stats['total_parents']) * 100 : 0 ?>%"></div>
                 </div>
             </div>
         </div>
@@ -110,7 +136,13 @@ $stats = $stmt->fetch();
                 <div>
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Completed DPT</p>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white"><?= $stats['completed_dpt'] ?></h3>
-                    <p class="text-xs text-gray-400 mt-1"><?= round(($stats['completed_dpt'] / $stats['total_parents']) * 100, 1) ?>% success</p>
+                    <p class="text-xs text-gray-400 mt-1">
+                        <?php if ($stats['total_parents'] > 0): ?>
+                            <?= round(($stats['completed_dpt'] / $stats['total_parents']) * 100, 1) ?>% success
+                        <?php else: ?>
+                            Tidak ada data
+                        <?php endif; ?>
+                    </p>
                 </div>
                 <div class="w-12 h-12 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 flex items-center justify-center group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/50 transition-colors">
                     <i data-lucide="shield" class="w-6 h-6 text-yellow-600 dark:text-yellow-400"></i>
@@ -118,7 +150,7 @@ $stats = $stmt->fetch();
             </div>
             <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
                 <div class="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div class="h-full bg-yellow-500 rounded-full" style="width: <?= $stats['total_parents'] ? ($stats['completed_dpt'] / $stats['total_parents']) * 100 : 0 ?>%"></div>
+                    <div class="h-full bg-yellow-500 rounded-full" style="width: <?= ($stats['total_parents'] && $stats['total_parents'] != 0) ? ($stats['completed_dpt'] / $stats['total_parents']) * 100 : 0 ?>%"></div>
                 </div>
             </div>
         </div>

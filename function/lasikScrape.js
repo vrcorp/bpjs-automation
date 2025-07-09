@@ -109,7 +109,7 @@ async function scrapeSingleLasik(page, childData, attempt = 1) {
         console.error(`❌ Error scraping LASIK for KPJ ${kpj}:`, error.message);
         
         // Update with error status
-        const finalStatus = attempt >= 3 ? 'failed' : 'error';
+        // const finalStatus = attempt >= 3 ? 'failed' : 'error';
         await updateLasikStatus(childId, finalStatus, finalStatus);
         
         return { 
@@ -142,6 +142,7 @@ export async function scrapeLasik({ data, action = 'start', type = "child" }) {
     let jobId;
     let childId = data?.childId;
     let parentId = data?.parentId;
+    console.log(childId, parentId);
     
     // Determine job ID based on type
     if (type === "parent") {

@@ -76,12 +76,12 @@ export async function loginEklp(page, attempt = 1) {
     } catch (err) {
         console.error(`❌ EKLP Login attempt #${attempt} failed:`, err.message);
         
-        if (attempt < MAX_ATTEMPT) {
-            await new Promise(resolve => setTimeout(resolve, 5000));
-            return loginEklp(page, attempt + 1);
-        }
+        // if (attempt < MAX_ATTEMPT) {
+        //     await new Promise(resolve => setTimeout(resolve, 5000));
+        //     return loginEklp(page, attempt + 1);
+        // }
         
-        throw new Error("Max login attempts reached");
+        // throw new Error("Max login attempts reached");
     }
 }
 
@@ -166,7 +166,7 @@ async function scrapeSingleEklp(page, childData, attempt = 1) {
         console.error(`❌ Error scraping EKLP for KPJ ${kpj || nik}:`, error.message);
         
         // Update with error status
-        const finalStatus = attempt >= 3 ? 'failed' : 'error';
+        // const finalStatus = attempt >= 3 ? 'failed' : 'error';
         await updateEklpStatus(childId, finalStatus, finalStatus);
         
         

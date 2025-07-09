@@ -3,6 +3,7 @@ import { login } from "../function/sipp_login.js";
 import { inputDataAndScrape } from "../function/sipp_scrape.js";
 import { safeGoto } from "../function/config.js";
 import { getSelectedInduk } from "../database/function.js";
+import {generateAction} from "../function/handleAction.js";
 import dotenv from "dotenv";
 import {
   saveParent,
@@ -21,7 +22,7 @@ dotenv.config();
 const INPUT_PAGE_URL = process.env.SIPP_INPUT_URL;
 
 export async function generateSipp({
-  mode = "default",
+  mode,
   is_file = false,
   action = "start",
   config = null,
@@ -39,19 +40,16 @@ export async function generateSipp({
       });
       
       // login hanya sekali per tab
-      if (page.__logged !== true) {
-        await login(page);
-        page.__logged = true;
-      }
+      await login(page);
       
       if (is_file === false) {
         if (parentId !== null) {
-          await runFlowParent(page, parentId);
+          await runFlowParent(page, parentId,mode);
         } else {
-          await runDefaultFlow(page, parentId);
+          await runDefaultFlow(page,mode);
         }
       } else if (is_file === true) {
-        await runFileFlow(page,parentId);
+        await runFileFlow(page,parentId,mode);
       }
       
       console.log("🎉 Flow selesai");
@@ -76,8 +74,9 @@ export async function generateSipp({
 }
 
 /* ───────────────── helper ───────────────── */
-async function runDefaultFlow(page, parentId=null) {
+async function runDefaultFlow(page,mode) {
   const induxx = await getSelectedInduk();
+  console.log(induxx);
   // const x = 43;
   const pad2 = (n) => n.toString().padStart(2, "0");
   const parent_z = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -98,8 +97,8 @@ async function runDefaultFlow(page, parentId=null) {
     for (let pIdx = 0; pIdx < parent_z.length; pIdx++) {
       const parent = parent_z[pIdx];
       const zParent = parent;
-      const parentKpj = Number(`${induxx}${pad2(y)}${pad2(zParent)}`);
-      
+      const parentKpj = Number(`${induxx.induk}${pad2(y)}${pad2(zParent)}`);
+      console.log(parentKpj);
       // check status db
       const hasChecked = await checkParentStatus(parentKpj);
       if (hasChecked == "success" || hasChecked == "not found") {
@@ -126,7 +125,7 @@ async function runDefaultFlow(page, parentId=null) {
         const parentId = await saveParent(parentResult);
         
         for (const z of child_z[pIdx]) {
-          const childKpj = Number(`${induxx}${pad2(y)}${pad2(z)}`);
+          const childKpj = Number(`${induxx.induk}${pad2(y)}${pad2(z)}`);
           console.log(`   ↳ Cek child KPJ: ${childKpj}`);
           
           // check status db
@@ -149,7 +148,7 @@ async function runDefaultFlow(page, parentId=null) {
             percobaan: 1,
           };
           
-          await saveChild(childResult, parentId);
+          const childId=await saveChild(childResult, parentId);
           await safeGoto(page, INPUT_PAGE_URL);
           
           childResult = await inputDataAndScrape(page, {
@@ -159,6 +158,11 @@ async function runDefaultFlow(page, parentId=null) {
           console.log(childResult, parentId);
           childResult.sipp_status = "success";
           await saveChild(childResult, parentId);
+          if (childResult.nik !== "" && childResult.kpj !== "") {
+            childResult.id = childId;
+            generateAction(mode, childResult, parentId);
+          }
+          
           
           await new Promise((resolve) => setTimeout(resolve, 5000));
         }
@@ -178,7 +182,7 @@ async function runDefaultFlow(page, parentId=null) {
   // Jangan tutup tab di sini, biarkan user yang tutup dengan action:'stop'
 }
 
-async function runFlowParent(page, parentId) {
+async function runFlowParent(page, parentId,mode) {
   const induxx = await getSelectedInduk();
   const pad2 = (n) => n.toString().padStart(2, "0");
   const parent_z = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -205,7 +209,7 @@ async function runFlowParent(page, parentId) {
 
   for (let y = 1; y <= 99; y++) {
     for (const z of child_z[zParent]) {
-      const childKpj = Number(`${induxx}${pad2(y)}${pad2(z)}`);
+      const childKpj = Number(`${induxx.induk}${pad2(y)}${pad2(z)}`);
       // check status db
       const hasCheckedChild = await checkChildStatus(childKpj);
       if (hasCheckedChild !== null || hasCheckedChild == "success") {
@@ -224,11 +228,15 @@ async function runFlowParent(page, parentId) {
         sipp_status: "pending",
         percobaan: 1,
       };
-      await saveChild(childResult, parentId);
+      const childId = await saveChild(childResult, parentId);
       await safeGoto(page, INPUT_PAGE_URL);
       childResult = await inputDataAndScrape(page, { kpj: childKpj });
       childResult.sipp_status = "success";
       await saveChild(childResult, parentId);
+      if (childResult.nik !== "" && childResult.kpj !== "") {
+        childResult.id = childId;
+        generateAction(mode, childResult, parentId);
+      }
       await new Promise((resolve) => setTimeout(resolve, 5000));
     }
   }
@@ -236,7 +244,7 @@ async function runFlowParent(page, parentId) {
   console.log(`🎉 Semua child untuk parent ${parent.kpj} selesai diproses!`);
 }
 
-async function runFileFlow(page, parentId) {
+async function runFileFlow(page, parentId,mode) {
   let parents = [];
   if (parentId) {
     // 只处理指定的 parentId
@@ -270,6 +278,10 @@ async function runFileFlow(page, parentId) {
       let childResult = await inputDataAndScrape(page, { kpj: child.kpj });
       childResult.sipp_status = 'success';
       await saveChild({ ...child, ...childResult }, curParentId);
+      if (childResult.nik !== "" && childResult.kpj !== "") {
+        childResult.id = child.id;
+        generateAction(mode, childResult, parentId);
+      }
       await new Promise((resolve) => setTimeout(resolve, 3000));
     }
     await updateStatusParent(curParentId, 'success');

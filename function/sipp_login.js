@@ -16,7 +16,8 @@ export async function login(page, attempt = 1) {
     console.log(`🔐 Login attempt #${attempt} ke ${LOGIN_URL}`);
     await safeGoto(page, LOGIN_URL);
     // await page.screenshot({ path: 'login_debug.png', fullPage: true });
-    const captchaText = await solveCaptchaByScreenshot(page);
+    console.log("memulai proses captcha");
+    const captchaText = await solveCaptchaByScreenshot(page,"sipp");
     if (!captchaText) {
       console.log("✅ Sudah login, skip captcha");
       return true;
@@ -41,6 +42,7 @@ export async function login(page, attempt = 1) {
     
 
     await Promise.all([
+      captchaText,
       page.click('button[type="submit"]'),
       page.waitForNavigation({ timeout: 5000 }).catch(() => {}) // lanjut walau timeout
     ]);

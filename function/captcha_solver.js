@@ -4,38 +4,62 @@ import { Client } from "@gradio/client";
 import { v4 as uuidv4 } from "uuid";
 
 export async function solveCaptchaByScreenshot(page, jenis = "sipp") {
+  console.log("siap login");
   // 1️⃣  Pastikan gambar sudah betul-betul load & ukurannya final
-  await page.waitForFunction((jenis) => {
-    let img;
-    if (jenis === "sipp") {
+  let img;
+  if (jenis === "sipp") {
+    await page.waitForFunction(() => {
+      console.log("siap login sipp");
       img = document.querySelector('#img_captcha');
-    } else {
+      return img && img.complete && img.naturalWidth > 30;   // sesuaikan kalau perlu
+    }, { timeout: 5_000 });
+  } else {
+    await page.waitForFunction(() => {
+      console.log("siap login lainnya");
       img = Array.from(document.querySelectorAll('img')).find(i => i.alt === 'Captcha');
-    }
-    return img && img.complete && img.naturalWidth > 30;   // sesuaikan kalau perlu
-  }, { timeout: 5_000 });
+      return img && img.complete && img.naturalWidth > 30;   // sesuaikan kalau perlu
+    }, { timeout: 5_000 });
+  }
+  
+  let dataUrl;
+  if (jenis === "sipp") {
+    dataUrl = await page.evaluate(() => {
+      img = document.querySelector('#img_captcha');
+      const c   = document.createElement('canvas');
+      c.width  = img.naturalWidth;
+      c.height = img.naturalHeight;
+      const ctx = c.getContext('2d');
+    
+      // --- tambahkan dua baris berikut ---
+      ctx.fillStyle = '#FFFFFF';            // isi background putih
+      ctx.fillRect(0, 0, c.width, c.height);
+    
+      ctx.drawImage(img, 0, 0);
+    
+      // JPEG sudah aman, tak jadi hitam
+      return c.toDataURL('image/jpeg', 0.95);   // kualitas 95 %
+    });
+  } else {
+    dataUrl = await page.evaluate(() => {
+      img = Array.from(document.querySelectorAll('img')).find(i => i.alt === 'Captcha');
+      const c   = document.createElement('canvas');
+      c.width  = img.naturalWidth;
+      c.height = img.naturalHeight;
+      const ctx = c.getContext('2d');
+    
+      // --- tambahkan dua baris berikut ---
+      ctx.fillStyle = '#FFFFFF';            // isi background putih
+      ctx.fillRect(0, 0, c.width, c.height);
+    
+      ctx.drawImage(img, 0, 0);
+    
+      // JPEG sudah aman, tak jadi hitam
+      return c.toDataURL('image/jpeg', 0.95);   // kualitas 95 %
+    });
+  }
 
   // 2️⃣  Copy piksel ke <canvas> & ambil DataURL (PNG/JPEG)
-  const dataUrl = await page.evaluate((jenis) => {
-    if (jenis === "sipp") {
-      img = document.querySelector('#img_captcha');
-    } else {
-      img = Array.from(document.querySelectorAll('img')).find(i => i.alt === 'Captcha');
-    }
-    const c   = document.createElement('canvas');
-    c.width  = img.naturalWidth;
-    c.height = img.naturalHeight;
-    const ctx = c.getContext('2d');
   
-    // --- tambahkan dua baris berikut ---
-    ctx.fillStyle = '#FFFFFF';            // isi background putih
-    ctx.fillRect(0, 0, c.width, c.height);
-  
-    ctx.drawImage(img, 0, 0);
-  
-    // JPEG sudah aman, tak jadi hitam
-    return c.toDataURL('image/jpeg', 0.95);   // kualitas 95 %
-  });
 
   // 3️⃣  DataURL → Buffer
   const buffer = Buffer.from(dataUrl.split(',')[1], 'base64');

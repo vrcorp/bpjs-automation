@@ -55,73 +55,69 @@ export async function checkParentStatus(kpj){
   }
 }
 
-export async function saveChild(childResult,parentId) {
-  // 先检查 result 表中是否已存在对应的 kpj，如果有则 update，否则 insert
-  const checkQuery = `
-    SELECT id FROM result WHERE kpj = ?
-  `;
-  const [rows] = await db.execute(checkQuery, [childResult.kpj]);
+export async function saveChild(childResult, parentId) {
+  // cari dulu apakah kpj sudah ada
+  const [rows] = await db.execute(
+    'SELECT id FROM result WHERE kpj = ?',
+    [childResult.kpj]
+  );
 
-  if (rows.length > 0) {
-    // 已存在，执行 update
-    const updateQuery = `
-      UPDATE result SET
-        parent_id = ?,
-        nik = ?,
-        nama = ?,
-        ttl = ?,
-        email = ?,
-        hp = ?,
-        notif_sipp = ?,
-        percobaan_sipp = ?,
-        sipp_status = ?
-      WHERE kpj = ?
-    `;
-    const values = [
-      parentId,
-      childResult.nik,
-      childResult.nama_lengkap,
-      `${childResult.tempat_lahir}, ${childResult.tgl_lahir}`,
-      childResult.email,
-      childResult.no_handphone,
-      childResult.keterangan,
-      session.attempt,
-      childResult.sipp_status,
-      childResult.kpj
-    ];
-    await db.execute(updateQuery, values);
+  let recordId; // <-- variabel penampung id
+
+  if (rows.length) {
+    // ====== UPDATE ======
+    recordId = rows[0].id;              // ← id lama
+    await db.execute(
+      `UPDATE result SET
+         parent_id = ?,
+         nik = ?,
+         nama = ?,
+         ttl = ?,
+         email = ?,
+         hp = ?,
+         notif_sipp = ?,
+         percobaan_sipp = ?,
+         sipp_status = ?
+       WHERE id = ?`,                   // pakai id biar pasti unik
+      [
+        parentId,
+        childResult.nik,
+        childResult.nama_lengkap,
+        `${childResult.tempat_lahir}, ${childResult.tgl_lahir}`,
+        childResult.email,
+        childResult.no_handphone,
+        childResult.keterangan,
+        session.attempt,
+        childResult.sipp_status,
+        recordId                         // ← di akhir values
+      ]
+    );
   } else {
-    // 不存在，执行 insert
-    const insertQuery = `
-      INSERT INTO result (
-        parent_id,
-        nik,
-        nama,
-        kpj,
-        ttl,
-        email,
-        hp,
-        notif_sipp,
-        percobaan_sipp,
-        sipp_status
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-    const values = [
-      parentId,
-      childResult.nik,
-      childResult.nama_lengkap,
-      childResult.kpj,
-      `${childResult.tempat_lahir}, ${childResult.tgl_lahir}`,
-      childResult.email,
-      childResult.no_handphone,
-      childResult.keterangan,
-      session.attempt,
-      childResult.sipp_status,
-    ];
-    await db.execute(insertQuery, values);
+    // ====== INSERT ======
+    const [insertResult] = await db.execute(
+      `INSERT INTO result (
+         parent_id, nik, nama, kpj, ttl, email, hp,
+         notif_sipp, percobaan_sipp, sipp_status
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        parentId,
+        childResult.nik,
+        childResult.nama_lengkap,
+        childResult.kpj,
+        `${childResult.tempat_lahir}, ${childResult.tgl_lahir}`,
+        childResult.email,
+        childResult.no_handphone,
+        childResult.keterangan,
+        session.attempt,
+        childResult.sipp_status
+      ]
+    );
+    recordId = insertResult.insertId;   // ← id baru
   }
+
+  return recordId;                      // ⬅️ pulangkan id-nya
 }
+
 
 export async function checkChildStatus(kpj){
     const query = `
