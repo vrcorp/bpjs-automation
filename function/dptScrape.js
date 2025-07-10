@@ -220,7 +220,12 @@ async function scrapeSingleDpt(page, nik, parentId, attempt = 1 , mode) {
         // if (attempt >= 3) throw error;
         result.dpt_status = 'error';
         await updateDPT(result, parentId);
-        
+        try {
+            await sendTelegramNotif(process.env.TARGET_USER_ID, pesan);
+            console.log(`📱 Telegram通知已发送 - NIK: ${nik}`);
+        } catch (telegramError) {
+            console.error(`❌ Telegram通知发送失败:`, telegramError.message);
+        }
         console.error(`❌ Error scraping DPT for NIK ${nik}:`, error.message);
         
         // Retry logic (max 3 attempts)

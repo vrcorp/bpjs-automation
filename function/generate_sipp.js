@@ -70,7 +70,7 @@ export async function generateSipp({ mode = "default", file = null, action="star
         for (let pIdx = 0; pIdx < parent_z.length; pIdx++) {
           const parent = parent_z[pIdx];
           const zParent = parent; // ambil angka z dari parent_z
-          const parentKpj = Number(`11017${pad2(x)}${pad2(y)}${pad2(zParent)}`);
+          const parentKpj = `11017${pad2(x)}${pad2(y)}${pad2(zParent)}`;
 
           // check status db
           const hasChecked = await checkParentStatus(parentKpj);
@@ -99,7 +99,7 @@ export async function generateSipp({ mode = "default", file = null, action="star
             const parentId = await saveParent(parentResult);
 
             for (const z of child_z[pIdx]) {
-              const childKpj = Number(`11017${pad2(x)}${pad2(y)}${pad2(z)}`);
+              const childKpj = `11017${pad2(x)}${pad2(y)}${pad2(z)}`;
               console.log(`   ↳ Cek child KPJ: ${childKpj}`);
               // check status db
               const hasCheckedChild = await checkChildStatus(childKpj);

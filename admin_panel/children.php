@@ -103,6 +103,9 @@ $children = $stmt->fetchAll();
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">KPJ</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">NIK</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nama</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">TTL</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">HP</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">LASIK</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">EKLP</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kota</th>
@@ -117,6 +120,9 @@ $children = $stmt->fetchAll();
                         <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium"><?= htmlspecialchars($child['kpj'] ?? '') ?></td>
                         <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['nik'] ?? '') ?></td>
                         <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['nama'] ?? '') ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['ttl'] ?? '') ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['email'] ?? '') ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['hp'] ?? '') ?></td>
                         <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['notif_lasik'] ?? '') ?></td>
                         <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['notif_eklp'] ?? '') ?></td>
                         <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"><?= htmlspecialchars($child['kota'] ?? '') ?></td>
@@ -142,6 +148,9 @@ $children = $stmt->fetchAll();
                         <h3 class="font-medium text-gray-900 dark:text-white">KPJ: <?= htmlspecialchars($child['kpj'] ?? '') ?></h3>
                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">NIK: <?= htmlspecialchars($child['nik'] ?? '') ?></p>
                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Nama: <?= htmlspecialchars($child['nama'] ?? '') ?></p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">TTL: <?= htmlspecialchars($child['ttl'] ?? '') ?></p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">HP: <?= htmlspecialchars($child['hp'] ?? '') ?></p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Email: <?= htmlspecialchars($child['email'] ?? '') ?></p>
                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">LASIK: <?= htmlspecialchars($child['notif_lasik'] ?? '') ?></p>
                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">EKLP: <?= htmlspecialchars($child['notif_eklp'] ?? '') ?></p>
                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kota: <?= htmlspecialchars($child['kota'] ?? '') ?></p>
@@ -559,12 +568,37 @@ $children = $stmt->fetchAll();
             const kpj = row.querySelector('td:nth-child(1)')?.textContent.trim() || '-';
             const nik = row.querySelector('td:nth-child(2)')?.textContent.trim() || '-';
             const nama = row.querySelector('td:nth-child(3)')?.textContent.trim() || '-';
+            const ttl = row.querySelector('td:nth-child(9)')?.textContent.trim() || '-';
+            const email = row.querySelector('td:nth-child(10)')?.textContent.trim() || '-';
+            const hp = row.querySelector('td:nth-child(11)')?.textContent.trim() || '-';
             const lasik = row.querySelector('td:nth-child(4)')?.textContent.trim() || '-';
             const eklp = row.querySelector('td:nth-child(5)')?.textContent.trim() || '-';
             const kota = row.querySelector('td:nth-child(6)')?.textContent.trim() || '-';
             const kecamatan = row.querySelector('td:nth-child(7)')?.textContent.trim() || '-';
             const kelurahan = row.querySelector('td:nth-child(8)')?.textContent.trim() || '-';
-            return `KPJ: ${kpj}\nNIK: ${nik}\nNama: ${nama}\nLASIK: ${lasik}\nEKLP: ${eklp}\nKota: ${kota}\nKecamatan: ${kecamatan}\nKelurahan: ${kelurahan}`;
+            return `KPJ: ${kpj}\nNIK: ${nik}\nNama: ${nama}\nTTL: ${ttl}\nEmail: ${email}\nHP: ${hp}\nLASIK: ${lasik}\nEKLP: ${eklp}\nKota: ${kota}\nKecamatan: ${kecamatan}\nKelurahan: ${kelurahan}`;
+        }
+        function copyTextToClipboard(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                return navigator.clipboard.writeText(text);
+            } else {
+                // fallback for HTTP 或老浏览器
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.setAttribute('readonly', '');
+                textarea.style.position = 'absolute';
+                textarea.style.left = '-9999px';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    return Promise.resolve();
+                } catch (err) {
+                    document.body.removeChild(textarea);
+                    return Promise.reject(err);
+                }
+            }
         }
         document.querySelectorAll('.copy-child-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
@@ -572,8 +606,10 @@ $children = $stmt->fetchAll();
                 let row = this.closest('tr');
                 if (!row) row = this.closest('.bg-white');
                 const text = getChildCopyText(row);
-                navigator.clipboard.writeText(text).then(() => {
+                copyTextToClipboard(text).then(() => {
                     alert('Berhasil disalin!');
+                }).catch(() => {
+                    alert('Gagal menyalin!');
                 });
             });
         });

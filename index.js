@@ -10,6 +10,7 @@ import bodyParser from "body-parser";
 import ExcelJS from 'exceljs';
 import db from './database/db.js';
 import cors from 'cors';
+import { closeAllTabs } from "./browser/browserManager.js"; // 确保已导出
 
 const app = express();
 app.use(express.json());
@@ -194,6 +195,22 @@ app.post('/export-all', async (req, res) => {
   res.setHeader('Content-Disposition', `attachment; filename=export_all_${mode}.xlsx`);
   await workbook.xlsx.write(res);
   res.end();
+});
+
+app.post('/close-all-tabs', async (req, res) => {
+  try {
+    // 关闭所有 Puppeteer tab & browser
+    await closeAllTabs(true);
+
+    // 更新数据库所有 running_jobs 状态
+    await db.query(
+      "UPDATE running_jobs SET status='finish', end_at=NOW() WHERE status IN ('pending','process')"
+    );
+
+    res.json({ success: true, message: "Semua tab & job sudah dihentikan." });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 app.listen(3000, () => {

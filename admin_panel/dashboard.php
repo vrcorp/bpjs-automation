@@ -13,6 +13,23 @@ $stats = $stmt->fetch();
 ?>
 
 <div class="container mx-auto px-4 py-6">
+    <!-- Running Jobs Section -->
+    <div id="runningJobsSection" class="mb-6">
+        <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-xl shadow-sm p-5 flex flex-col gap-3">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="activity" class="w-5 h-5 text-yellow-600 dark:text-yellow-400"></i>
+                    <span class="font-semibold text-yellow-800 dark:text-yellow-200">Tugas yang Sedang Berjalan</span>
+                </div>
+                <button id="stopAllJobsBtn" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-all text-sm font-medium flex items-center gap-1">
+                    <i data-lucide="x-octagon" class="w-4 h-4"></i> Stop All
+                </button>
+            </div>
+            <div id="runningJobsList">
+                <div class="text-gray-500 dark:text-gray-300 text-sm">Sedang memuat...</div>
+            </div>
+        </div>
+    </div>
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
             <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">Dashboard Overview</h1>
@@ -25,7 +42,7 @@ $stats = $stmt->fetch();
             </button>
         </div>
     </div>
-
+    
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
         <!-- Total Parents Card -->
@@ -46,7 +63,7 @@ $stats = $stmt->fetch();
                 </div>
             </div>
         </div>
-
+        
         <!-- SIPP Card -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 hover:shadow-md transition-all duration-300 group">
             <div class="flex items-center justify-between">
@@ -75,7 +92,7 @@ $stats = $stmt->fetch();
                 </div>
             </div>
         </div>
-
+        
         <!-- LASIK Card -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 hover:shadow-md transition-all duration-300 group">
             <div class="flex items-center justify-between">
@@ -104,7 +121,7 @@ $stats = $stmt->fetch();
                 </div>
             </div>
         </div>
-
+        
         <!-- EKLP Card -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 hover:shadow-md transition-all duration-300 group">
             <div class="flex items-center justify-between">
@@ -129,7 +146,7 @@ $stats = $stmt->fetch();
                 </div>
             </div>
         </div>
-
+        
         <!-- DPT Card -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 hover:shadow-md transition-all duration-300 group">
             <div class="flex items-center justify-between">
@@ -155,7 +172,7 @@ $stats = $stmt->fetch();
             </div>
         </div>
     </div>
-
+    
     <!-- Control Buttons -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
         <h2 class="text-lg md:text-xl font-semibold mb-4 text-gray-800 dark:text-white">Process Controls</h2>
@@ -212,7 +229,7 @@ $stats = $stmt->fetch();
             </div>
         </div>
     </div>
-
+    
     <!-- Recent Parents -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
@@ -224,7 +241,7 @@ $stats = $stmt->fetch();
                 View All <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
             </a>
         </div>
-
+        
         <!-- Desktop Table -->
         <div class="hidden md:block overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -244,27 +261,27 @@ $stats = $stmt->fetch();
                         FROM parents p WHERE status = 'success' ORDER BY created_at DESC LIMIT 5");
                     while ($parent = $stmt->fetch()):
                     ?>
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium"><?= htmlspecialchars($parent['kpj']) ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium"><?= htmlspecialchars($parent['kpj']) ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
                                 <?= $parent['status'] === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : ($parent['status'] === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100') ?>">
-                                    <?= ucfirst($parent['status']) ?>
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400"><?= $parent['child_count'] ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400"><?= date('Y-m-d H:i', strtotime($parent['created_at'])) ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <a href="children.php?parent_id=<?= $parent['id'] ?>" class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 transition-colors">
-                                    <i data-lucide="list" class="w-4 h-4 mr-1"></i> View
-                                </a>
-                            </td>
-                        </tr>
+                                <?= ucfirst($parent['status']) ?>
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400"><?= $parent['child_count'] ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400"><?= date('Y-m-d H:i', strtotime($parent['created_at'])) ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <a href="children.php?parent_id=<?= $parent['id'] ?>" class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 transition-colors">
+                                <i data-lucide="list" class="w-4 h-4 mr-1"></i> View
+                            </a>
+                        </td>
+                    </tr>
                     <?php endwhile; ?>
                 </tbody>
             </table>
         </div>
-
+        
         <!-- Mobile Cards -->
         <div class="md:hidden grid grid-cols-1 gap-4 p-4">
             <?php
@@ -273,29 +290,29 @@ $stats = $stmt->fetch();
                 FROM parents p WHERE status = 'success' ORDER BY created_at DESC LIMIT 5");
             while ($parent = $stmt->fetch()):
             ?>
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h3 class="font-medium text-gray-900 dark:text-white"><?= htmlspecialchars($parent['kpj']) ?></h3>
-                            <div class="flex items-center mt-1">
-                                <span class="px-2 py-1 text-xs font-semibold rounded-full 
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-medium text-gray-900 dark:text-white"><?= htmlspecialchars($parent['kpj']) ?></h3>
+                        <div class="flex items-center mt-1">
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full 
                                 <?= $parent['status'] === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : ($parent['status'] === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100') ?>">
-                                    <?= ucfirst($parent['status']) ?>
-                                </span>
-                                <span class="ml-2 text-sm text-gray-500 dark:text-gray-400"><?= $parent['child_count'] ?> children</span>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xs text-gray-400 dark:text-gray-500"><?= date('Y-m-d H:i', strtotime($parent['created_at'])) ?></p>
+                                <?= ucfirst($parent['status']) ?>
+                            </span>
+                            <span class="ml-2 text-sm text-gray-500 dark:text-gray-400"><?= $parent['child_count'] ?> children</span>
                         </div>
                     </div>
-
-                    <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-                        <a href="children.php?parent_id=<?= $parent['id'] ?>" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm flex items-center">
-                            <i data-lucide="list" class="w-4 h-4 mr-1"></i> View Details
-                        </a>
+                    <div class="text-right">
+                        <p class="text-xs text-gray-400 dark:text-gray-500"><?= date('Y-m-d H:i', strtotime($parent['created_at'])) ?></p>
                     </div>
                 </div>
+                
+                <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                    <a href="children.php?parent_id=<?= $parent['id'] ?>" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm flex items-center">
+                        <i data-lucide="list" class="w-4 h-4 mr-1"></i> View Details
+                    </a>
+                </div>
+            </div>
             <?php endwhile; ?>
         </div>
     </div>
@@ -400,25 +417,25 @@ $stats = $stmt->fetch();
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
-
+        
         <div class="p-6">
             <div class="space-y-3">
                 <div class="flex items-center p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     <input type="radio" id="exportOption1" name="exportOption" value="sipp_lasik_dpt" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700" checked>
                     <label for="exportOption1" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">SIPP → LASIK → DPT</label>
                 </div>
-
+                
                 <div class="flex items-center p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     <input type="radio" id="exportOption2" name="exportOption" value="sipp_dpt" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
                     <label for="exportOption2" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">SIPP → DPT</label>
                 </div>
-
+                
                 <div class="flex items-center p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     <input type="radio" id="exportOption3" name="exportOption" value="sipp_eklp_dpt" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
                     <label for="exportOption3" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300">SIPP → EKLP → DPT</label>
                 </div>
             </div>
-
+            
             <div class="mt-6 flex justify-end space-x-3">
                 <button id="cancelExport" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
                     Cancel
@@ -468,21 +485,21 @@ $stats = $stmt->fetch();
 <script>
     // Initialize Lucide icons
     lucide.createIcons();
-
+    
     document.addEventListener('DOMContentLoaded', function() {
         // Refresh button
         const refreshBtn = document.getElementById('refreshBtn');
         refreshBtn.addEventListener('click', function() {
             const icon = this.querySelector('i');
             icon.classList.add('animate-spin');
-
+            
             // Simulate refresh (in a real app, this would reload data)
             setTimeout(() => {
                 icon.classList.remove('animate-spin');
                 showToast('Dashboard refreshed', 'success');
             }, 1000);
         });
-
+        
         // Generate All Modal
         const openGenerateAllModal = document.getElementById('openGenerateAllModal');
         const generateAllModal = document.getElementById('generateAllModal');
@@ -516,37 +533,37 @@ $stats = $stmt->fetch();
             confirmGenerateAll.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i> Sedang menghasilkan...';
             confirmGenerateAll.disabled = true;
             lucide.createIcons();
-            fetch('http://localhost:3000/generate-all', {
-                    method: 'POST',
+            fetch('<?php echo $url_api;?>generate-all', {
+                method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         mode: selectedMode
                     })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    showToast(data.message || 'Tugas generate massal telah dikirim', 'success');
-                    closeGenModal();
-                })
-                .catch(err => {
-                    showToast('Gagal melakukan generate massal', 'error');
-                })
-                .finally(() => {
-                    confirmGenerateAll.innerHTML = 'Mulai Generate';
-                    confirmGenerateAll.disabled = false;
-                    lucide.createIcons();
-                });
+            })
+            .then(res => res.json())
+            .then(data => {
+                showToast(data.message || 'Tugas generate massal telah dikirim', 'success');
+                closeGenModal();
+            })
+            .catch(err => {
+                showToast('Gagal melakukan generate massal', 'error');
+            })
+            .finally(() => {
+                confirmGenerateAll.innerHTML = 'Mulai Generate';
+                confirmGenerateAll.disabled = false;
+                lucide.createIcons();
+            });
         });
-
+        
         // Export modal
         const exportBtn = document.getElementById('exportBtn');
         const exportModal = document.getElementById('exportModal');
         const closeExportModal = document.getElementById('closeExportModal');
         const cancelExport = document.getElementById('cancelExport');
         const confirmExport = document.getElementById('confirmExport');
-
+        
         // Open modal with animation
         const openModal = () => {
             exportModal.classList.remove('hidden');
@@ -555,7 +572,7 @@ $stats = $stmt->fetch();
                 exportModal.querySelector('div').classList.add('opacity-100', 'scale-100');
             }, 10);
         };
-
+        
         // Close modal with animation
         const closeModal = () => {
             exportModal.querySelector('div').classList.remove('opacity-100', 'scale-100');
@@ -564,63 +581,63 @@ $stats = $stmt->fetch();
                 exportModal.classList.add('hidden');
             }, 200);
         };
-
+        
         exportBtn.addEventListener('click', openModal);
         closeExportModal.addEventListener('click', closeModal);
         cancelExport.addEventListener('click', closeModal);
-
+        
         // Close modal when clicking outside
         exportModal.addEventListener('click', (e) => {
             if (e.target === exportModal) {
                 closeModal();
             }
         });
-
+        
         confirmExport.addEventListener('click', () => {
             const selectedOption = document.querySelector('input[name="exportOption"]:checked').value;
-
+            
             // Show loading state
             confirmExport.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i> Exporting...';
             confirmExport.disabled = true;
             lucide.createIcons();
-
+            
             fetch('<?= $url_api ?>export-all', {
-                    method: 'POST',
+                method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         mode: selectedOption
                     })
-                })
-                .then(async res => {
-                    if (!res.ok) throw new Error('Export gagal');
-                    const blob = await res.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
+            })
+            .then(async res => {
+                if (!res.ok) throw new Error('Export gagal');
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
                     a.download = `export_all_${selectedOption}.xlsx`;
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                    window.URL.revokeObjectURL(url);
-                    showToast('Export berhasil', 'success');
-                    closeExportModal();
-                })
-                .catch(err => {
-                    showToast('Export gagal', 'error');
-                })
-                .finally(() => {
-                    confirmExportAll.innerHTML = 'Ekspor';
-                    confirmExportAll.disabled = false;
-                    lucide.createIcons();
-                });
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                showToast('Export berhasil', 'success');
+                closeExportModal();
+            })
+            .catch(err => {
+                showToast('Export gagal', 'error');
+            })
+            .finally(() => {
+                confirmExportAll.innerHTML = 'Ekspor';
+                confirmExportAll.disabled = false;
+                lucide.createIcons();
+            });
         });
-
+        
         // Toggle buttons
         // The original toggleGenerate, toggleLasik, toggleEklp, toggleDpt are removed.
         // The new Generate All modal handles the batch generation.
-
+        
         // Toast notification function
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
@@ -630,21 +647,21 @@ $stats = $stmt->fetch();
                 info: 'bg-blue-500',
                 warning: 'bg-yellow-500'
             };
-
+            
             toast.className = `fixed bottom-4 right-4 px-4 py-2 rounded-md shadow-lg text-white ${colors[type]} flex items-center transform transition-all duration-300 translate-y-2 opacity-0`;
             toast.innerHTML = `
                 <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info'}" class="w-5 h-5 mr-2"></i>
                 <span>${message}</span>
             `;
-
+            
             document.body.appendChild(toast);
             lucide.createIcons();
-
+            
             setTimeout(() => {
                 toast.classList.remove('translate-y-2', 'opacity-0');
                 toast.classList.add('translate-y-0', 'opacity-100');
             }, 10);
-
+            
             setTimeout(() => {
                 toast.classList.remove('translate-y-0', 'opacity-100');
                 toast.classList.add('translate-y-2', 'opacity-0');
@@ -1032,6 +1049,98 @@ $stats = $stmt->fetch();
         document.getElementById('uploadFileBtn').addEventListener('click', function() {
             window.location.href = 'parents_file.php';
         });
+
+        // Running Jobs Section
+        const runningJobsSection = document.getElementById('runningJobsSection');
+        const runningJobsList = document.getElementById('runningJobsList');
+        const stopAllJobsBtn = document.getElementById('stopAllJobsBtn');
+
+        function fetchRunningJobs() {
+            fetch('/admin_panel/api/running_jobs.php')
+                .then(res => res.json())
+                .then(data => {
+                    const jobs = data.data || [];
+                    if (jobs.length === 0) {
+                        runningJobsList.innerHTML = '<div class="text-gray-400 dark:text-gray-500 text-sm">Tidak ada tugas yang sedang berjalan</div>';
+                        stopAllJobsBtn.disabled = true;
+                        stopAllJobsBtn.classList.add('opacity-50','cursor-not-allowed');
+                    } else {
+                        stopAllJobsBtn.disabled = false;
+                        stopAllJobsBtn.classList.remove('opacity-50','cursor-not-allowed');
+                        runningJobsList.innerHTML = `
+                            <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-800">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-xs md:text-sm">
+                                    <thead class="bg-gray-50 dark:bg-gray-900/40">
+                                        <tr>
+                                            <th class="px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200">ID</th>
+                                            <th class="px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200">Mode</th>
+                                            <th class="px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200">Parent</th>
+                                            <th class="px-3 py-2 text-center font-semibold text-gray-700 dark:text-gray-200">File?</th>
+                                            <th class="px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200">Status</th>
+                                            <th class="px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200">Waktu Mulai</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                                        ${jobs.map(j => `
+                                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors">
+                                                <td class="px-3 py-2 text-gray-800 dark:text-gray-100">${j.id}</td>
+                                                <td class="px-3 py-2 text-gray-800 dark:text-gray-100">${j.mode}</td>
+                                                <td class="px-3 py-2 text-gray-800 dark:text-gray-100">${j.parent_id ?? '-'}</td>
+                                                <td class="px-3 py-2 text-center">
+                                                    ${j.is_file == 1 
+                                                        ? '<span class="inline-block text-green-600 dark:text-green-400 text-lg">✔️</span>' 
+                                                        : '<span class="inline-block text-gray-400 dark:text-gray-600 text-lg">—</span>'}
+                                                </td>
+                                                <td class="px-3 py-2">
+                                                    <span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium
+                                                        ${j.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-200' : ''}
+                                                        ${j.status === 'process' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200' : ''}
+                                                        ${j.status === 'finish' ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200' : ''}
+                                                        ${j.status === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-200' : ''}
+                                                    ">
+                                                        ${j.status}
+                                                    </span>
+                                                </td>
+                                                <td class="px-3 py-2 text-gray-700 dark:text-gray-300">${j.created_at}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
+                    }
+                });
+        }
+        stopAllJobsBtn.addEventListener('click', function() {
+            if (!confirm('Yakin ingin menghentikan semua tugas dan menutup semua browser?')) return;
+            stopAllJobsBtn.disabled = true;
+            stopAllJobsBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i>Stopping...';
+            fetch('<?php echo $url_api;?>close-all-tabs', {
+                method: 'POST'
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Semua tugas telah dihentikan dan semua browser telah ditutup', 'success');
+                } else {
+                    showToast(data.error || 'Operasi gagal', 'error');
+                }
+                fetchRunningJobs();
+            })
+            .catch(() => {
+                showToast('Permintaan gagal', 'error');
+                fetchRunningJobs();
+            })
+            .finally(() => {
+                stopAllJobsBtn.innerHTML = '<i data-lucide="x-octagon" class="w-4 h-4"></i> Stop All';
+                stopAllJobsBtn.disabled = false;
+                lucide.createIcons();
+            });
+        });
+        // 页面加载时自动刷新
+        fetchRunningJobs();
+        // 可选：定时刷新
+        setInterval(fetchRunningJobs, 10000);
     });
 </script>
 

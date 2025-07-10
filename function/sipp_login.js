@@ -75,6 +75,26 @@ export async function login(page, attempt = 1) {
         return el ? el.textContent : "";
       }, modalSelector);
 
+      // 自动选择swal2-select的第一个有value的option并点击Ok按钮
+      const hasSwalSelect = await page.$('select.swal2-select');
+      if (hasSwalSelect) {
+        await page.evaluate(() => {
+          const select = document.querySelector('select.swal2-select');
+          if (select) {
+            const opts = Array.from(select.options).filter(opt => opt.value && !opt.disabled);
+            if (opts.length > 0) {
+              select.value = opts[0].value;
+              select.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+          }
+        });
+        // 点击Ok按钮
+        const okBtn = await page.$('button.swal2-confirm');
+        if (okBtn) await okBtn.click();
+        // 等待modal消失
+        await page.waitForSelector('select.swal2-select', { hidden: true, timeout: 5000 }).catch(()=>{});
+      }
+
       if (modalText.includes("Captcha tidak sesuai")) {
         console.warn("⚠️ Modal muncul: Captcha salah");
 
@@ -89,7 +109,17 @@ export async function login(page, attempt = 1) {
         } else {
           throw new Error("🚫 Batas login maksimal tercapai.");
         }
+      }else{
+        if (attempt < MAX_ATTEMPT) {
+          console.log("🔄 Ulangi login...");
+          await new Promise((resolve) => setTimeout(resolve, 5000)); // ✅ BENAR
+          return await login(page, attempt + 1);
+        } else {
+          throw new Error("🚫 Batas login maksimal tercapai.");
+        }
       }
+
+      
     }
 
     const currentUrl = page.url();

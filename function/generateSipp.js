@@ -97,7 +97,7 @@ async function runDefaultFlow(page,mode) {
     for (let pIdx = 0; pIdx < parent_z.length; pIdx++) {
       const parent = parent_z[pIdx];
       const zParent = parent;
-      const parentKpj = Number(`${induxx.induk}${pad2(y)}${pad2(zParent)}`);
+      const parentKpj = `${induxx.induk}${pad2(y)}${pad2(zParent)}`;
       console.log(parentKpj);
       // check status db
       const hasChecked = await checkParentStatus(parentKpj);
@@ -125,7 +125,7 @@ async function runDefaultFlow(page,mode) {
         const parentId = await saveParent(parentResult);
         
         for (const z of child_z[pIdx]) {
-          const childKpj = Number(`${induxx.induk}${pad2(y)}${pad2(z)}`);
+          const childKpj = `${induxx.induk}${pad2(y)}${pad2(z)}`;
           console.log(`   ↳ Cek child KPJ: ${childKpj}`);
           
           // check status db
@@ -209,7 +209,8 @@ async function runFlowParent(page, parentId,mode) {
 
   for (let y = 1; y <= 99; y++) {
     for (const z of child_z[zParent]) {
-      const childKpj = Number(`${induxx.induk}${pad2(y)}${pad2(z)}`);
+      const childKpj = `${induxx.induk}${pad2(y)}${pad2(z)}`;
+      
       // check status db
       const hasCheckedChild = await checkChildStatus(childKpj);
       if (hasCheckedChild !== null || hasCheckedChild == "success") {

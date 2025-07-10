@@ -7,10 +7,10 @@ const pages = new Map(); // Menyimpan semua tab: jobId → page
 
 // Konfigurasi default
 const browserConfig = {
-  headless: 'new',
+  headless: false,
   defaultViewport: null,
   userDataDir: './puppeteer_profile',
-  // executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
   args: [
     "--no-sandbox",
     '--window-size=1366,768',

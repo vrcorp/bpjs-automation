@@ -20,7 +20,7 @@ const pad2 = (n) => n.toString().padStart(2, "0");
 // Helper function to generate child KPJ numbers based on parent KPJ and z values
 function generateChildKpj(parentKpj, z) {
   const prefix = parentKpj.toString().slice(0, -2); // Remove last 2 digits (zParent)
-  return Number(`${prefix}${pad2(z)}`);
+  return `${prefix}${pad2(z)}`;
 }
 
 // Get the correct child_z array based on parent's z value
