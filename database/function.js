@@ -325,6 +325,21 @@ export async function getChildrenByParentId(parentId) {
   return rows;
 }
 
+// 根据 tipe 获取已选中的 akun_sipp 账号
+export async function getSelectedAkunSippByTipe(tipe) {
+  // 查询 akun_sipp 表，返回指定 tipe 且 is_selected = TRUE 的账号
+  const query = `
+    SELECT * FROM akun_sipp WHERE tipe = ? AND is_selected = TRUE
+  `;
+  const [rows] = await db.execute(query, [tipe]);
+  if (rows.length > 0) {
+    return rows[0];
+  } else {
+    return null;
+  }
+}
+
+
 
 
 

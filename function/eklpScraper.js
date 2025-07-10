@@ -2,7 +2,7 @@
 import dotenv from "dotenv";
 import { solveCaptchaByScreenshot } from '../function/captcha_solver.js';
 import { safeGoto } from '../function/config.js';
-import { updateEklpStatus, checkEklpStatus } from '../database/function.js';
+import { updateEklpStatus, checkEklpStatus,getSelectedAkunSippByTipe } from '../database/function.js';
 import { openTab, closeTab } from "../browser/browserManager.js";
 import db from "../database/db.js";
 
@@ -10,8 +10,20 @@ dotenv.config();
 
 const EKLP_LOGIN_URL = process.env.EKLP_LOGIN_URL || "https://e-plkk.bpjsketenagakerjaan.go.id/login.bpjs";
 const EKLP_INPUT_URL = process.env.EKLP_INPUT_URL || "https://e-plkk.bpjsketenagakerjaan.go.id/form/eligble.bpjs";
-const EKLP_USERNAME = process.env.EKLP_USERNAME;
-const EKLP_PASSWORD = process.env.EKLP_PASSWORD;
+let EKLP_USERNAME = null;
+let EKLP_PASSWORD = null;
+
+// 通过 getSelectedAkunSippByTipe 获取 eklp 账号
+export async function setEklpCredentials() {
+  const akun = await getSelectedAkunSippByTipe('eklp');
+  if (akun) {
+    EKLP_USERNAME = akun.email;
+    EKLP_PASSWORD = akun.password;
+  } else {
+    EKLP_USERNAME = null;
+    EKLP_PASSWORD = null;
+  }
+}
 
 // Database functions
 export async function getChildById(childId) {
@@ -40,6 +52,10 @@ export async function loginEklp(page, attempt = 1) {
     const MAX_ATTEMPT = 5;
 
     try {
+        // 获取 eklp 账号（如果还没设置则重新获取）
+        if (!EKLP_USERNAME || !EKLP_PASSWORD) {
+            await setEklpCredentials();
+        }
         console.log(`🔐 EKLP Login attempt #${attempt}`);
         await safeGoto(page, EKLP_LOGIN_URL);
         

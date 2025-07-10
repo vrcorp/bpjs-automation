@@ -340,6 +340,55 @@ $stats = $stmt->fetch();
             <div class="flex justify-center mt-4" id="indukPagination"></div>
         </div>
     </div>
+
+    <!-- Akun SIPP & EKLP Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 overflow-hidden my-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div>
+                <h2 class="text-lg md:text-xl font-semibold text-gray-800 dark:text-white">Manajemen Akun SIPP & EKLP</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Kelola akun SIPP dan EKLP, pilih, tambah, dan cari</p>
+            </div>
+            <button id="addAkunBtn" class="mt-2 sm:mt-0 inline-flex items-center px-3 py-2 text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors bg-green-100 dark:bg-green-900 rounded-lg">
+                <i data-lucide="plus" class="w-4 h-4 mr-1"></i> Tambah Akun
+            </button>
+        </div>
+        <div class="px-6 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
+                <div class="flex flex-col md:flex-row gap-2">
+                    <input id="searchAkun" type="text" placeholder="Cari email..." class="w-full md:w-64 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200" />
+                    <select id="filterTipe" class="w-full md:w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                        <option value="">Semua Tipe</option>
+                        <option value="sipp">SIPP</option>
+                        <option value="eklp">EKLP</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Desktop Table -->
+            <div class="hidden md:block overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" id="akunTable">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tipe</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Selected</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Created</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700" id="akunTableBody">
+                        <!-- Data will be loaded by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Mobile Cards -->
+            <div class="md:hidden grid grid-cols-1 gap-4" id="akunCards">
+                <!-- Data will be loaded by JS -->
+            </div>
+            <!-- Pagination -->
+            <div class="flex justify-center mt-4" id="akunPagination"></div>
+        </div>
+    </div>
 </div>
 
 <!-- Export Modal -->
@@ -392,6 +441,26 @@ $stats = $stmt->fetch();
         <div class="flex justify-end space-x-3">
             <button id="cancelAddInduk" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">Batal</button>
             <button id="confirmAddInduk" class="px-4 py-2 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-md hover:from-green-700 hover:to-green-600 transition-all duration-200 shadow-md hover:shadow-lg">Tambah</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Add Akun -->
+<div id="addAkunModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md p-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Tambah Akun Baru</h3>
+        <div class="space-y-4">
+            <input id="newAkunEmail" type="email" placeholder="Email" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200" />
+            <input id="newAkunPassword" type="password" placeholder="Password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200" />
+            <select id="newAkunTipe" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                <option value="">Pilih Tipe</option>
+                <option value="sipp">SIPP</option>
+                <option value="eklp">EKLP</option>
+            </select>
+        </div>
+        <div class="flex justify-end space-x-3 mt-4">
+            <button id="cancelAddAkun" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">Batal</button>
+            <button id="confirmAddAkun" class="px-4 py-2 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-md hover:from-green-700 hover:to-green-600 transition-all duration-200 shadow-md hover:shadow-lg">Tambah</button>
         </div>
     </div>
 </div>
@@ -732,6 +801,233 @@ $stats = $stmt->fetch();
         });
         // 初始化加载
         fetchInduk();
+
+        // Akun SIPP & EKLP Section Logic
+        const addAkunBtn = document.getElementById('addAkunBtn');
+        const addAkunModal = document.getElementById('addAkunModal');
+        const cancelAddAkun = document.getElementById('cancelAddAkun');
+        const confirmAddAkun = document.getElementById('confirmAddAkun');
+        const newAkunEmail = document.getElementById('newAkunEmail');
+        const newAkunPassword = document.getElementById('newAkunPassword');
+        const newAkunTipe = document.getElementById('newAkunTipe');
+        const searchAkun = document.getElementById('searchAkun');
+        const filterTipe = document.getElementById('filterTipe');
+        const akunTableBody = document.getElementById('akunTableBody');
+        const akunCards = document.getElementById('akunCards');
+        const akunPagination = document.getElementById('akunPagination');
+        let akunData = [];
+        let akunPage = 1;
+        let akunPageSize = 5;
+        let akunSearch = '';
+        let akunFilterTipe = '';
+
+        function fetchAkun() {
+            const params = new URLSearchParams({
+                page: akunPage,
+                size: akunPageSize,
+                search: encodeURIComponent(akunSearch),
+                tipe: akunFilterTipe
+            });
+            fetch(`/admin_panel/api/akun_sipp.php?${params.toString()}`)
+                .then(res => res.json())
+                .then(data => {
+                    akunData = data.data;
+                    renderAkunTable();
+                    renderAkunCards();
+                    renderAkunPagination(data.total, data.page, data.size);
+                });
+        }
+
+        function renderAkunTable() {
+            if (!akunTableBody) return;
+            akunTableBody.innerHTML = '';
+            akunData.forEach(row => {
+                akunTableBody.innerHTML += `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">${row.id}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">${row.email}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">${row.tipe}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            ${row.is_selected 
+                                ? '<span class="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded-full">Ya</span>' 
+                                : '<span class="inline-block px-2 py-1 text-xs font-semibold bg-gray-200 text-gray-500 rounded-full">Tidak</span>'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">${row.created_at}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            ${row.is_selected 
+                                ? '' 
+                                : `<button class="setSelectedAkunBtn px-3 py-1 bg-blue-500 text-white rounded mr-2" data-id="${row.id}" data-tipe="${row.tipe}">Set Selected</button>`
+                            }
+                            <button class="deleteAkunBtn px-3 py-1 bg-red-500 text-white rounded" data-id="${row.id}">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            document.querySelectorAll('.setSelectedAkunBtn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    const tipe = this.getAttribute('data-tipe');
+                    fetch('/admin_panel/api/akun_sipp.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            action: 'set_selected',
+                            id,
+                            tipe
+                        })
+                    }).then(res => res.json()).then(() => fetchAkun());
+                });
+            });
+            document.querySelectorAll('.deleteAkunBtn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    if (confirm('Yakin ingin menghapus akun ini?')) {
+                        fetch('/admin_panel/api/akun_sipp.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                action: 'delete',
+                                id
+                            })
+                        }).then(res => res.json()).then(() => fetchAkun());
+                    }
+                });
+            });
+        }
+
+        function renderAkunCards() {
+            if (!akunCards) return;
+            akunCards.innerHTML = '';
+            akunData.forEach(row => {
+                akunCards.innerHTML += `
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-2">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-gray-900 dark:text-white">${row.email}</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">ID: ${row.id}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Tipe: ${row.tipe}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">${row.created_at}</p>
+                                <p class="text-xs ${row.is_selected ? 'text-green-600' : 'text-gray-400'}">${row.is_selected ? 'Selected' : 'Not selected'}</p>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                ${row.is_selected 
+                                    ? '' 
+                                    : `<button class="setSelectedAkunBtn px-3 py-1 bg-blue-500 text-white rounded text-xs" data-id="${row.id}" data-tipe="${row.tipe}">Set Selected</button>`
+                                }
+                                <button class="deleteAkunBtn px-3 py-1 bg-red-500 text-white rounded text-xs" data-id="${row.id}">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.querySelectorAll('.setSelectedAkunBtn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    const tipe = this.getAttribute('data-tipe');
+                    fetch('/admin_panel/api/akun_sipp.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            action: 'set_selected',
+                            id,
+                            tipe
+                        })
+                    }).then(res => res.json()).then(() => fetchAkun());
+                });
+            });
+            document.querySelectorAll('.deleteAkunBtn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    if (confirm('Yakin ingin menghapus akun ini?')) {
+                        fetch('/admin_panel/api/akun_sipp.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                action: 'delete',
+                                id
+                            })
+                        }).then(res => res.json()).then(() => fetchAkun());
+                    }
+                });
+            });
+        }
+
+        function renderAkunPagination(total, page, size) {
+            if (!akunPagination) return;
+            const totalPages = Math.ceil(total / size);
+            let html = '';
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="mx-1 px-3 py-1 rounded ${i === page ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200'}" onclick="akunGoToPage(${i})">${i}</button>`;
+            }
+            akunPagination.innerHTML = html;
+        }
+
+        function akunGoToPage(page) {
+            akunPage = page;
+            fetchAkun();
+        }
+        window.akunGoToPage = akunGoToPage;
+        searchAkun.addEventListener('input', function() {
+            akunSearch = this.value;
+            akunPage = 1;
+            fetchAkun();
+        });
+        filterTipe.addEventListener('change', function() {
+            akunFilterTipe = this.value;
+            akunPage = 1;
+            fetchAkun();
+        });
+
+        addAkunBtn.addEventListener('click', () => {
+            addAkunModal.classList.remove('hidden');
+        });
+        cancelAddAkun.addEventListener('click', () => {
+            addAkunModal.classList.add('hidden');
+            newAkunEmail.value = '';
+            newAkunPassword.value = '';
+            newAkunTipe.value = '';
+        });
+        confirmAddAkun.addEventListener('click', () => {
+            const email = newAkunEmail.value.trim();
+            const password = newAkunPassword.value.trim();
+            const tipe = newAkunTipe.value;
+
+            if (!email) return showToast('Email wajib diisi', 'error');
+            if (!password) return showToast('Password wajib diisi', 'error');
+            if (!tipe) return showToast('Tipe akun wajib dipilih', 'error');
+
+            fetch('/admin_panel/api/akun_sipp.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: 'add',
+                    email,
+                    password,
+                    tipe
+                })
+            }).then(res => res.json()).then(() => {
+                addAkunModal.classList.add('hidden');
+                newAkunEmail.value = '';
+                newAkunPassword.value = '';
+                newAkunTipe.value = '';
+                fetchAkun();
+                showToast('Akun berhasil ditambahkan', 'success');
+            }).catch(err => {
+                showToast('Gagal menambahkan akun', 'error');
+            });
+        });
+        // 初始化加载
+        fetchAkun();
 
         document.getElementById('uploadFileBtn').addEventListener('click', function() {
             window.location.href = 'parents_file.php';

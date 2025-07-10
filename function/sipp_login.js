@@ -2,17 +2,35 @@ import dotenv from "dotenv";
 import { solveCaptchaByScreenshot } from '../function/captcha_solver.js';
 import '../function/logger.js';
 import { safeGoto } from '../function/config.js';
+import {getSelectedAkunSippByTipe} from '../database/function.js';
 
 dotenv.config();
 
 const LOGIN_URL = process.env.SIPP_LOGIN_URL;
-const USERNAME = process.env.SIPP_USERNAME;
-const PASSWORD = process.env.SIPP_PASSWORD;
+// 通过 getSelectedAkunSippByTipe 获取用户名和密码
+let USERNAME = null;
+let PASSWORD = null;
+
+export async function setSippCredentials() {
+  // 默认 tipe 为 'sipp'，如有需要可调整
+  const akun = await getSelectedAkunSippByTipe('sipp');
+  if (akun) {
+    USERNAME = akun.email;
+    PASSWORD = akun.password;
+  } else {
+    USERNAME = null;
+    PASSWORD = null;
+  }
+}
 
 export async function login(page, attempt = 1) {
   const MAX_ATTEMPT = 5;
 
   try {
+    // 取账号（如果还没设置则重新获取）
+    if (!USERNAME || !PASSWORD) {
+      await setSippCredentials();
+    }
     console.log(`🔐 Login attempt #${attempt} ke ${LOGIN_URL}`);
     await safeGoto(page, LOGIN_URL);
     // await page.screenshot({ path: 'login_debug.png', fullPage: true });

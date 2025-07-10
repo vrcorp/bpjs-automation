@@ -7,10 +7,10 @@ const pages = new Map(); // Menyimpan semua tab: jobId → page
 
 // Konfigurasi default
 const browserConfig = {
-  headless: false,
+  headless: 'new',
   defaultViewport: null,
   userDataDir: './puppeteer_profile',
-  executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  // executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
   args: [
     "--no-sandbox",
     '--window-size=1366,768',
@@ -39,6 +39,8 @@ async function getBrowser() {
 
   console.log('🚀 Launching browser...');
   browser = await puppeteer.launch(browserConfig);
+
+  console.log('dbrowser:', browser);
   
   browser.on('disconnected', () => {
     console.log('🔌 Browser disconnected');

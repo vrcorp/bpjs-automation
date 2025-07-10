@@ -73,3 +73,19 @@ CREATE TABLE induk (
   is_selected BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+CREATE TABLE akun_sipp (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  is_selected BOOLEAN DEFAULT FALSE,
+  tipe ENUM('sipp', 'eklp') NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 插入 akun_sipp 的默认数据（示例）
+INSERT INTO akun_sipp (email, password, is_selected, tipe) VALUES 
+('pastibisa88v@gmail.com', 'Gondrong123', TRUE, 'sipp'),
+('Sendiprayoga198@gmail.com', 'Bebek1997', FALSE, 'sipp'),
+('rsudlawang@ymail.com', '123456', FALSE, 'eklp');
