@@ -138,7 +138,7 @@ async function checkForModal(page) {
     }
 }
 
-export async function scrapeLasik({ data, action = 'start', type = "child" }) {
+export async function scrapeLasik({ data, action = 'start', type = "child" ,mode="default"}) {
     let jobId;
     let childId = data?.childId;
     let parentId = data?.parentId;

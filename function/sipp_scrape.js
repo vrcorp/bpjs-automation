@@ -6,7 +6,7 @@ const URL_SETELAH_POPUP = process.env.SIPP_SETELAH_POPUP;
 
 export async function inputDataAndScrape(page, data, tried = 1) {
   try {
-
+    
     await page.waitForSelector(
       ".btn.btn-primary.btn-bordered.waves-effect.w-md",
       { timeout: 5000 }
@@ -17,6 +17,8 @@ export async function inputDataAndScrape(page, data, tried = 1) {
 
     if (data.kpj) {
       await page.type('input[id="kpj"]', data.kpj.toString());
+    }else{
+      console.log("tidak ada data kpj");
     }
 
     // Klik tombol cek status
@@ -49,7 +51,7 @@ export async function inputDataAndScrape(page, data, tried = 1) {
 
         if (
           content &&
-          content.includes("silakan lengkapi data profil tenaga kerja.")
+          content.includes("atas nama")
         ) {
           const namaPeserta = content.match(/atas nama (.*?) terdaftar/i)?.[1] || "";
 
@@ -74,7 +76,7 @@ export async function inputDataAndScrape(page, data, tried = 1) {
       });
       if (
         modalInfo.message &&
-        (modalInfo.message.includes("silakan lengkapi data profil tenaga kerja.") || modalInfo.message.includes("sudah tidak dapat digunakan"))
+        (modalInfo.message.includes("atas nama") || modalInfo.message.includes("sudah tidak dapat digunakan"))
       ) {
         let nama_lengkapp = modalInfo.nama_peserta;
         console.log("🎯 Hasil nama dari modal:", nama_lengkapp);
@@ -116,7 +118,7 @@ export async function inputDataAndScrape(page, data, tried = 1) {
       } else {
         let keterangan = "Not Found";
 
-        await page.click(".swal2-confirm.swal2-styled");
+        
         const formData = {
           nik: "",
           tempat_lahir: "",

@@ -167,6 +167,11 @@ foreach ($jobParentStmt->fetchAll() as $row) {
                                         </a>
                                     <?php endif; ?>
                                 <?php endif; ?>
+                                <?php if ($parent['status'] === 'not found' || $parent['status'] === 'error' ): ?>
+                                    <a href="#" class="text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-300 transition-colors duration-200 generate-parent" data-id="<?= $parent['id'] ?>">
+                                        <i data-lucide="refresh-cw" class="w-4 h-4 inline mr-1"></i> Regenerate
+                                    </a>
+                                <?php endif; ?>
                                 <?php if (!$allEmpty): ?>
                                     <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300 transition-colors duration-200 export-parent" data-id="<?= $parent['id'] ?>">
                                         <i data-lucide="download" class="w-4 h-4 inline mr-1"></i> Export
@@ -217,6 +222,7 @@ foreach ($jobParentStmt->fetchAll() as $row) {
                         </div>
                     </div>
 
+                    <!-- In the mobile card view -->
                     <div class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700 flex flex-wrap gap-2">
                         <?php
                         $allDone = ($parent['pending_lasik'] == 0 && $parent['pending_eklp'] == 0 && $parent['pending_dpt'] == 0);
@@ -232,6 +238,11 @@ foreach ($jobParentStmt->fetchAll() as $row) {
                                     <i data-lucide="zap" class="w-4 h-4 mr-1"></i> Generate
                                 </a>
                             <?php endif; ?>
+                        <?php endif; ?>
+                        <?php if ($parent['status'] === 'not found' || $parent['status'] === 'error'): ?>
+                            <a href="#" class="text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-300 text-sm flex items-center regenerate-parent" data-id="<?= $parent['id'] ?>">
+                                <i data-lucide="refresh-cw" class="w-4 h-4 mr-1"></i> Regenerate
+                            </a>
                         <?php endif; ?>
                         <?php if (!$allEmpty): ?>
                             <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300 text-sm flex items-center export-parent" data-id="<?= $parent['id'] ?>">
@@ -467,36 +478,59 @@ foreach ($jobParentStmt->fetchAll() as $row) {
         }
         closeGenerateAllModal.addEventListener('click', closeGenModal);
         cancelGenerateAll.addEventListener('click', closeGenModal);
+        // --- Generate per parent ---
+        let currentGenerateParentId = null;
+        document.querySelectorAll('.generate-parent').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                currentGenerateParentId = this.getAttribute('data-id');
+                // alert(currentGenerateParentId);
+                // show modal (reuse generateAllModal, but for parent)
+                generateAllModal.classList.remove('hidden');
+                setTimeout(() => {
+                    generateAllModal.querySelector('div').classList.remove('opacity-0', 'scale-95');
+                    generateAllModal.querySelector('div').classList.add('opacity-100', 'scale-100');
+                }, 10);
+            });
+        });
         generateAllModal.addEventListener('click', (e) => {
             if (e.target === generateAllModal) closeGenModal();
         });
+
         confirmGenerateAll.addEventListener('click', () => {
             const selectedMode = document.querySelector('input[name="generateModeAll"]:checked').value;
             confirmGenerateAll.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i> Sedang menghasilkan...';
             confirmGenerateAll.disabled = true;
             lucide.createIcons();
+            const bodyData = {
+                mode: selectedMode
+            };
+
+            if (currentGenerateParentId) {
+                bodyData.parentId = currentGenerateParentId;
+            }
+
             fetch('<?= $url_api ?>generate-all', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        mode: selectedMode
-                    })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    showToast(data.message || 'Tugas generate massal telah dikirim', 'success');
-                    closeGenModal();
-                })
-                .catch(err => {
-                    showToast('Gagal melakukan generate massal', 'error');
-                })
-                .finally(() => {
-                    confirmGenerateAll.innerHTML = 'Mulai Generate';
-                    confirmGenerateAll.disabled = false;
-                    lucide.createIcons();
-                });
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bodyData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                showToast(data.message || 'Tugas generate massal telah dikirim', 'success');
+                closeGenModal();
+            })
+            .catch(err => {
+                showToast('Gagal melakukan generate massal', 'error');
+            })
+            .finally(() => {
+                confirmGenerateAll.innerHTML = 'Mulai Generate';
+                confirmGenerateAll.disabled = false;
+                lucide.createIcons();
+            });
+
         });
 
         // --- Export All Modal ---
@@ -563,54 +597,7 @@ foreach ($jobParentStmt->fetchAll() as $row) {
                 });
         });
 
-        // --- Generate per parent ---
-        let currentGenerateParentId = null;
-        document.querySelectorAll('.generate-parent').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                currentGenerateParentId = this.getAttribute('data-id');
-                // show modal (reuse generateAllModal, but for parent)
-                generateAllModal.classList.remove('hidden');
-                setTimeout(() => {
-                    generateAllModal.querySelector('div').classList.remove('opacity-0', 'scale-95');
-                    generateAllModal.querySelector('div').classList.add('opacity-100', 'scale-100');
-                }, 10);
-            });
-        });
-        // override confirmGenerateAll for parent if currentGenerateParentId set
-        confirmGenerateAll.addEventListener('click', function handleParentGen(e) {
-            if (currentGenerateParentId) {
-                const selectedMode = document.querySelector('input[name="generateModeAll"]:checked').value;
-                confirmGenerateAll.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i> Sedang menghasilkan...';
-                confirmGenerateAll.disabled = true;
-                lucide.createIcons();
-                fetch('<?= $url_api ?>generate-all', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            mode: selectedMode,
-                            parentId: currentGenerateParentId
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        showToast(data.message || 'Generate parent telah dikirim', 'success');
-                        closeGenModal();
-                    })
-                    .catch(err => {
-                        showToast('Gagal generate parent', 'error');
-                    })
-                    .finally(() => {
-                        confirmGenerateAll.innerHTML = 'Mulai Generate';
-                        confirmGenerateAll.disabled = false;
-                        lucide.createIcons();
-                        currentGenerateParentId = null;
-                    });
-                e.stopImmediatePropagation();
-            }
-        }, true);
+        
 
         // --- Export per parent ---
         let currentExportParentId = null;
@@ -719,6 +706,8 @@ foreach ($jobParentStmt->fetchAll() as $row) {
     document.getElementById('uploadFileBtn').addEventListener('click', function() {
         window.location.href = 'parents_file.php';
     });
+
+
 </script>
 
 <?php require_once 'includes/footer.php'; ?>

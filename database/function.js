@@ -32,6 +32,7 @@ export async function saveParent(parentResult) {
   }
 }
 
+
 export async function updateStatusParent(parentId, status){
   const query = `
     UPDATE parents
@@ -129,6 +130,18 @@ export async function checkChildStatus(kpj){
   } else {
     return null; // 未找到对应数据
   }
+}
+
+export async function checkChildNik(kpj){
+  const query = `
+  SELECT nik FROM result WHERE kpj = ?
+`;
+const [rows] = await db.execute(query, [kpj]);
+if (rows.length > 0) {
+  return rows[0].nik;
+} else {
+  return null; // 未找到对应数据
+}
 }
 
 export async function checkLasikStatus(kpj) {

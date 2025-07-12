@@ -165,8 +165,8 @@ async function scrapeSingleDpt(page, nik, parentId, attempt = 1 , mode) {
         // 获取最新的DPT数据并发送Telegram通知
         const [rows] = await db.query(`
             SELECT r.nik, r.kpj, r.nama, r.email, r.ttl, r.hp,
-                   r.kota, r.kecamatan, r.kelurahan,      -- <─ tambahkan
-                   r.notif_lasik, r.notif_eklp            -- <─ tambahkan
+                   r.kota, r.kecamatan, r.kelurahan,      
+                   r.notif_lasik, r.notif_eklp            
             FROM result r
             JOIN parents p ON r.parent_id = p.id
             WHERE r.nik = ? AND r.parent_id = ?
@@ -220,6 +220,44 @@ async function scrapeSingleDpt(page, nik, parentId, attempt = 1 , mode) {
         // if (attempt >= 3) throw error;
         result.dpt_status = 'error';
         await updateDPT(result, parentId);
+        await updateDPT(result, parentId);
+        // 获取最新的DPT数据并发送Telegram通知
+        const [rows] = await db.query(`
+            SELECT r.nik, r.kpj, r.nama, r.email, r.ttl, r.hp,
+                   r.kota, r.kecamatan, r.kelurahan,      
+                   r.notif_lasik, r.notif_eklp            
+            FROM result r
+            JOIN parents p ON r.parent_id = p.id
+            WHERE r.nik = ? AND r.parent_id = ?
+          `, [nik, parentId]);
+          
+          const latestDptData = rows[0];      // objek baris pertama
+          if (!latestDptData) {
+            console.error('❌ Data DPT tidak ditemukan');
+            return { status: 'not_found', nik };
+          }
+        let pesan = `
+            <b>🔔 Notifikasi Pembaruan Data DPT</b>
+
+            <b>Mode:</b> ${mode || 'N/A'}
+            <b>NIK:</b> ${latestDptData.nik || 'N/A'}
+            <b>KPJ:</b> ${latestDptData.kpj || 'N/A'}
+            <b>Nama:</b> ${latestDptData.nama || 'N/A'}
+            <b>Email:</b> ${latestDptData.email || 'N/A'}
+            <b>HP:</b> ${latestDptData.hp || 'N/A'}
+            <b>TTL:</b> ${latestDptData.ttl || 'N/A'}
+            <b>Kota:</b> ${latestDptData.kota || 'N/A'}
+            <b>Kecamatan:</b> ${latestDptData.kecamatan || 'N/A'}
+            <b>Kelurahan:</b> ${latestDptData.kelurahan || 'N/A'}
+            `;
+
+            if (mode === 'sipp_lasik_dpt') {
+            pesan += `<b>Lasik:</b> ${latestDptData.notif_lasik || 'N/A'}\n`;
+            } else if (mode === 'sipp_eklp_dpt') {
+            pesan += `<b>EKLP:</b> ${latestDptData.notif_eklp || 'N/A'}\n`;
+            }
+
+            pesan = pesan.trim();
         try {
             await sendTelegramNotif(process.env.TARGET_USER_ID, pesan);
             console.log(`📱 Telegram通知已发送 - NIK: ${nik}`);
