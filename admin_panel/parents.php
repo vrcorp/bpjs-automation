@@ -240,7 +240,7 @@ foreach ($jobParentStmt->fetchAll() as $row) {
                             <?php endif; ?>
                         <?php endif; ?>
                         <?php if ($parent['status'] === 'not found' || $parent['status'] === 'error'): ?>
-                            <a href="#" class="text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-300 text-sm flex items-center regenerate-parent" data-id="<?= $parent['id'] ?>">
+                            <a href="#" class="text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-300 text-sm flex items-center generate-parent" data-id="<?= $parent['id'] ?>">
                                 <i data-lucide="refresh-cw" class="w-4 h-4 mr-1"></i> Regenerate
                             </a>
                         <?php endif; ?>
@@ -451,7 +451,7 @@ foreach ($jobParentStmt->fetchAll() as $row) {
         openGenerateAllModal.addEventListener('click', function() {
             <?php if ($runningMassal): ?>
             if (confirm('Yakin ingin menghentikan proses massal?')) {
-                fetch('<?= $url_api ?>stop-massal', {
+                fetch('<?php echo $url_api;?>close-all-tabs', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ is_file: false })

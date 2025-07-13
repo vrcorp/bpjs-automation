@@ -104,7 +104,7 @@ async function runDefaultFlow(page,mode, parentId) {
       console.log(parentKpj);
       // check status db
       const hasChecked = await checkParentStatus(parentKpj);
-      if (hasChecked == "success" || hasChecked == "not found") {
+      if (hasChecked == "success") {
         console.log(`✅ Parent ${parentKpj} sudah diproses`);
         continue;
       }
@@ -133,7 +133,8 @@ async function runDefaultFlow(page,mode, parentId) {
           
           // check status db
           const hasCheckedChild = await checkChildStatus(childKpj);
-          if (hasCheckedChild !== null || hasCheckedChild == "success") {
+          const hasNikChild = await checkChildNik(childKpj);
+          if (hasNikChild !== null) {
             console.log(`✅ Child ${childKpj} sudah diproses`);
             continue;
           }
@@ -334,7 +335,7 @@ for (const z of childrenToProcess) {
       console.log(parentKpj);
       // check status db
       const hasChecked = await checkParentStatus(parentKpj);
-      if (hasChecked == "success" || hasChecked == "not found") {
+      if (hasChecked == "success") {
         console.log(`✅ Parent ${parentKpj} sudah diproses`);
         continue;
       }
@@ -362,7 +363,8 @@ for (const z of childrenToProcess) {
           
           // check status db
           const hasCheckedChild = await checkChildStatus(childKpj);
-          if (hasCheckedChild !== null || hasCheckedChild == "success") {
+          const hasNikChild = await checkChildNik(childKpj);
+          if (hasNikChild !== null) {
             console.log(`✅ Child ${childKpj} sudah diproses`);
             continue;
           }
