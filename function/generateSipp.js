@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer";
 import { login } from "../function/sipp_login.js";
-import { inputDataAndScrape } from "../function/sipp_scrape.js";
+import { inputDataAndScrape,hasLogin } from "../function/sipp_scrape.js";
 import { safeGoto } from "../function/config.js";
 import { getSelectedInduk } from "../database/function.js";
 import {generateAction} from "../function/handleAction.js";
@@ -40,8 +40,12 @@ export async function generateSipp({
         userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
       });
       
-      // login hanya sekali per tab
       await login(page);
+
+      // login hanya sekali per tab
+      if(!await hasLogin(page)){
+        await login(page);
+      }
       
       if (is_file === false) {
         if (parentId !== null) {

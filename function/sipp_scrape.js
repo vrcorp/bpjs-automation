@@ -2,6 +2,30 @@ import dotenv from "dotenv";
 import { safeGoto } from '../function/config.js';
 dotenv.config();
 
+// -----------------------------------------------------------------------------
+// Utility
+// -----------------------------------------------------------------------------
+/**
+ * Checks whether the “account-content” element – which only appears after a user
+ * has successfully logged in – is present on the page.  The check only waits
+ * up to 5 seconds so that the caller does not block for too long.
+ *
+ * @param {import('puppeteer').Page} page Puppeteer page instance.
+ * @returns {Promise<boolean>} Resolves to true if the element appears, false otherwise.
+ */
+export async function hasLogin(page) {
+  try {
+    // Wait up to 5 seconds for the element.  If it shows up we consider the user
+    // as logged-in.
+    await page.waitForSelector('.account-content', { timeout: 5000 });
+    return true;
+  } catch (_err) {
+    // Selector not found within timeout → user is not logged-in.
+    return false;
+  }
+}
+
+
 const URL_SETELAH_POPUP = process.env.SIPP_SETELAH_POPUP;
 
 export async function inputDataAndScrape(page, data, tried = 1) {
